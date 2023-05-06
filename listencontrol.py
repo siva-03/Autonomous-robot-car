@@ -79,7 +79,7 @@ def get_difference_with_threshold(orig_arr, thresh):
     depth_thresh = np.where(orig_arr > thresh, thresh, orig_arr)
     left_side = depth_thresh[:, :320]
     right_side = depth_thresh[:, 320:]
-    return np.mean(right_side) - np.mean(left_side)
+    return np.mean(left_side) - np.mean(right_side)
 
 
 def write_serial_byte_string(channel=1, target=1500):
