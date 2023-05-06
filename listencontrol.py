@@ -173,6 +173,7 @@ def control_loop():
 
             # Calculate output value
             output = kp * error + ki * integral + kd * error_derivative
+            print("output before min/max: ", output)
 
             # Limit output to maximum value
             output = min(max_output, max(-max_output, output))
@@ -183,7 +184,7 @@ def control_loop():
             # output_to_pololu_value = min_max_scale(output)
             # convert_output_to_maestro_int # take output, get 1000-2000 value for our steering angle
             # call_servo_with_int(output) # get byte seq, and write to file
-            print("output: ", output)
+            print("output after min/max: ", output)
             maestro_output = min_max_scale(output, -max_output, max_output, -50, 50)
             print("maestro output: ", maestro_output)
             car_current_wheel += maestro_output
