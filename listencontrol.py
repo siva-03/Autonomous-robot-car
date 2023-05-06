@@ -143,7 +143,7 @@ def control_loop():
     print("initializing, setting to 1500 x70 x2e")
     # cmd = r'sudo echo -n -e "\x84\x01\x70\x2e" > /dev/ttyACM0'
     # os.system(cmd)
-    rospy.sleep(0.5)
+    rospy.sleep(0.1)
 
     while not rospy.is_shutdown():
         # Main Loop
@@ -193,7 +193,7 @@ def control_loop():
             print("car current wheel after CHOPPING: ", car_current_wheel)
             write_serial_byte_string(channel=1, target=car_current_wheel)
 
-        rospy.sleep(0.5)
+        rospy.sleep(0.1)
 
 
 if __name__ == '__main__':
