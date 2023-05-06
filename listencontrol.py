@@ -107,8 +107,8 @@ def write_serial_byte_string(channel=1, target=1500):
     echo_string = r'sudo echo -n -e "\\' + serial_bytes[0] + r'\\' + serial_bytes[1] + r'\\' + serial_bytes[2] + r'\\' + serial_bytes[3] + r'" > /dev/ttyACM0'
     # \x84\x01\x70\x2e" > /dev/ttyACM0'
     print("trying to turn with bytes: ")
-    print(echo_string)
-    # os.system(echo_string)
+    # print(echo_string)
+    os.system(echo_string)
 
 
 # Main control loop for the listener script
@@ -141,8 +141,8 @@ def control_loop():
     #  Initialize Car
     car_current_wheel = 1500
     print("initializing, setting to 1500 x70 x2e")
-    # cmd = r'sudo echo -n -e "\x84\x01\x70\x2e" > /dev/ttyACM0'
-    # os.system(cmd)
+    cmd = r'sudo echo -n -e "\x84\x02\x70\x2e" > /dev/ttyACM0'
+    os.system(cmd)
     rospy.sleep(0.1)
 
     while not rospy.is_shutdown():
@@ -191,7 +191,7 @@ def control_loop():
             print("car current wheel after output: ", car_current_wheel)
             car_current_wheel = min(2000, max(car_current_wheel, 1000))
             print("car current wheel after CHOPPING: ", car_current_wheel)
-            write_serial_byte_string(channel=1, target=car_current_wheel)
+            write_serial_byte_string(channel=2, target=car_current_wheel)
 
         rospy.sleep(0.1)
 
