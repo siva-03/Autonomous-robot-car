@@ -127,7 +127,7 @@ def control_loop():
 
     # pid initialization
     kp = 1.0
-    ki = 0.001
+    ki = 0
     kd = 0.01
     set_point = 0.0  # balanced depth on both sides (perhaps we could also weight depth toward center more)
     threshold = 10000  # for depth
