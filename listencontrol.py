@@ -107,7 +107,7 @@ def write_serial_byte_string(channel=1, target=1500):
     # os.system(echo_string)
 
 
-# Main control loop for listener script
+# Main control loop for the listener script
 def control_loop():
     rospy.init_node('robotcontrol', anonymous=True)
     sensor_data = SensorData()
