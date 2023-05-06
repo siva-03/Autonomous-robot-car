@@ -152,6 +152,7 @@ def control_loop():
         if depth_data.image_data is not None and not flag:
 
             position = get_difference_with_threshold(depth_data.image_data, threshold)
+            print("im currently at camera diff position: ", position)
             # Get current time
             current_time = time.time()
 
@@ -182,10 +183,13 @@ def control_loop():
             # output_to_pololu_value = min_max_scale(output)
             # convert_output_to_maestro_int # take output, get 1000-2000 value for our steering angle
             # call_servo_with_int(output) # get byte seq, and write to file
-            print(output)
+            print("output: ", output)
             maestro_output = min_max_scale(output, -max_output, max_output, -50, 50)
+            print("maestro output: ", maestro_output)
             car_current_wheel += maestro_output
+            print("car current wheel after output: ", car_current_wheel)
             car_current_wheel = min(2000, max(car_current_wheel, 1000))
+            print("car current wheel after CHOPPING: " , car_current_wheel)
             write_serial_byte_string(channel=1, target=car_current_wheel)
 
         rospy.sleep(0.5)
