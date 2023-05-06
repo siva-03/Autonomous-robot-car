@@ -189,7 +189,7 @@ def control_loop():
             car_current_wheel += maestro_output
             print("car current wheel after output: ", car_current_wheel)
             car_current_wheel = min(2000, max(car_current_wheel, 1000))
-            print("car current wheel after CHOPPING: " , car_current_wheel)
+            print("car current wheel after CHOPPING: ", car_current_wheel)
             write_serial_byte_string(channel=1, target=car_current_wheel)
 
         rospy.sleep(0.5)
