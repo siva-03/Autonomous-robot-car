@@ -30,6 +30,7 @@ def imu_callback(data, sensor_data):
 def camera_callback(data, param_data):
     camera_data = param_data[0]
     bridge = param_data[1]
+    real_img = None
     try:
         real_img = bridge.imgmsg_to_cv2(data, "bgr8")
         real_img = np.asarray(real_img)[:, :, ::-1]
@@ -44,6 +45,7 @@ def camera_callback(data, param_data):
 def depth_callback(data, param_data):
     depth_data = param_data[0]
     bridge = param_data[1]
+    real_img = None
     try:
         real_img = bridge.imgmsg_to_cv2(data)
         real_img = np.asarray(real_img)
@@ -65,7 +67,7 @@ def depth_callback(data, param_data):
 # to the new max of 2000, which on the Pololu will map to steering wheel fully right
 # But actually probably better to do from 0 to 4000 since -10000 and 10000 neven happen, but we
 # still sometimes want the full turn, and we will clip between 1000 and 2000
-def min_max_scale(value, min_value=-threshold/20, max_value=threshold/20, new_min_value=-50, new_max_value=50):
+def min_max_scale(value, min_value, max_value, new_min_value, new_max_value):
     return (value - min_value) / (max_value - min_value) * (new_max_value - new_min_value) + new_min_value
 
 
@@ -81,6 +83,7 @@ def get_difference_with_threshold(orig_arr, thresh):
 
 
 def write_serial_byte_string(channel=1, target=1500):
+    print("received cmd to write to channel 1 target: ", String(target))
     # create serial bytes array
     # initialize with command byte, maestro, always this
     serial_bytes = ["x84"]
@@ -103,6 +106,7 @@ def write_serial_byte_string(channel=1, target=1500):
 
     echo_string = r'sudo echo -n -e "\\' + serial_bytes[0] + r'\\' + serial_bytes[1] + r'\\' + serial_bytes[2] + r'\\' + serial_bytes[3] + r'" > /dev/ttyACM0'
     # \x84\x01\x70\x2e" > /dev/ttyACM0'
+    print("trying to turn with bytes: ")
     print(echo_string)
     # os.system(echo_string)
 
@@ -137,13 +141,13 @@ def control_loop():
     #  Initialize Car
     car_current_wheel = 1500
     print("initializing, setting to 1500 x70 x2e")
-    cmd = r'sudo echo -n -e "\x84\x01\x70\x2e" > /dev/ttyACM0'
-    os.system(cmd)
+    # cmd = r'sudo echo -n -e "\x84\x01\x70\x2e" > /dev/ttyACM0'
+    # os.system(cmd)
     rospy.sleep(0.5)
 
     while not rospy.is_shutdown():
         # Main Loop
-        print("main loop imu: ", sensor_data.imu_data)
+        # print("main loop imu: ", sensor_data.imu_data)
 
         if depth_data.image_data is not None and not flag:
 
@@ -180,8 +184,10 @@ def control_loop():
             # call_servo_with_int(output) # get byte seq, and write to file
             print(output)
             maestro_output = min_max_scale(output, -max_output, max_output, -50, 50)
-            write_serial_byte_string(channel=1, target=maestro_output)
-
+            car_current_wheel += maestro_output
+            car_current_wheel = min(2000, max(car_current_wheel, 1000))
+            write_serial_byte_string(channel=1, target=car_current_wheel)
+            
         rospy.sleep(0.5)
 
 
