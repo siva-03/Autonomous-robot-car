@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import time
+import os
 
 
 class SensorData:
@@ -54,23 +55,60 @@ def depth_callback(data, param_data):
     depth_data.height = data.height
 
 
-def min_max_scale(value):
-    min_value = -10000
-    max_value = 10000
-    new_min_value = -1
-    new_max_value = 1
+# Takes a value, assuming it came from a domain with min_value and max_value,
+# and proportionally shifts it to the new_min_value and new_max_value range.
+# In this case, we use -10000 and 10000 as the domain because we are thresholding
+# at 10 meters, which is 10000 in the depth camera, and we assume one side having full
+# depth (all 10000's) and other side having no depth (all 0's, i.e. wall there) is min/max.
+# Then the range of 1000 to 2000 is the Pololu Maestro control range. So say
+# diff=10000, meaning all wall on left and no wall right (10000-0), that will map
+# to the new max of 2000, which on the Pololu will map to steering wheel fully right
+# But actually probably better to do from 0 to 4000 since -10000 and 10000 neven happen, but we
+# still sometimes want the full turn, and we will clip between 1000 and 2000
+def min_max_scale(value, min_value=-threshold/20, max_value=threshold/20, new_min_value=-50, new_max_value=50):
     return (value - min_value) / (max_value - min_value) * (new_max_value - new_min_value) + new_min_value
 
 
+# takes an array, and replaces all the values greater than the threshold with
+# the threshold itself.
+# Returns the difference between the mean of the left side
+# and the right side (columns, second dim)
 def get_difference_with_threshold(orig_arr, thresh):
     depth_thresh = np.where(orig_arr > thresh, thresh, orig_arr)
     left_side = depth_thresh[:, :320]
     right_side = depth_thresh[:, 320:]
-    return min_max_scale(np.mean(left_side) - np.mean(right_side))
+    return np.mean(right_side) - np.mean(left_side)
+
+
+def write_serial_byte_string(channel=1, target=1500):
+    # create serial bytes array
+    # initialize with command byte, maestro, always this
+    serial_bytes = ["x84"]
+
+    # channel bytes
+    channel = int(channel)
+    channel_hex = hex(channel)[1:]
+    serial_bytes.append(channel_hex)
+
+    # target bytes
+    target = int(target) * 4
+    # second and third bytes need to be defined specifically like this:
+    # https://www.pololu.com/docs/0J40/5.e
+    second_byte = target & 0x7F
+    third_byte = (target >> 7) & 0x7F
+    second_hex = hex(second_byte)[1:]
+    third_hex = hex(third_byte)[1:]
+    serial_bytes.append(second_hex)
+    serial_bytes.append(third_hex)
+
+    echo_string = r'sudo echo -n -e "\\' + serial_bytes[0] + r'\\' + serial_bytes[1] + r'\\' + serial_bytes[2] + r'\\' + serial_bytes[3] + r'" > /dev/ttyACM0'
+    # \x84\x01\x70\x2e" > /dev/ttyACM0'
+    print(echo_string)
+    # os.system(echo_string)
 
 
 def control_loop():
-    rospy.init_node('mylisten', anonymous=True)
+    rospy.init_node('robotcontrol', anonymous=True)
     sensor_data = SensorData()
     camera_data = ImageData()
     depth_data = ImageData()
@@ -86,13 +124,21 @@ def control_loop():
     kp = 1.0
     ki = 0.001
     kd = 0.01
-    set_point = 0.0
+    set_point = 0.0  # balanced depth on both sides (perhaps we could also weight depth toward center more)
+    threshold = 10000  # for depth
     error = 0.0
     last_error = 0.0
     integral = 0.0
-    max_output = 0.1
+    max_output = threshold / 20  # how much pi / x radians to move at once, x = 20 here; maestro would move 50
     start_time = time.time()
     last_time = start_time
+
+    #  Initialize Car
+    car_current_wheel = 1500
+    print("initializing, setting to 1500 x70 x2e")
+    cmd = r'sudo echo -n -e "\x84\x01\x70\x2e" > /dev/ttyACM0'
+    os.system(cmd)
+    rospy.sleep(0.5)
 
     while not rospy.is_shutdown():
         # Main Loop
@@ -100,7 +146,7 @@ def control_loop():
 
         if depth_data.image_data is not None and not flag:
 
-            position = get_difference_with_threshold(depth_data.image_data)
+            position = get_difference_with_threshold(depth_data.image_data, threshold)
             # Get current time
             current_time = time.time()
 
@@ -124,7 +170,16 @@ def control_loop():
 
             # Limit output to maximum value
             output = min(max_output, max(-max_output, output))
+            # get_desired_angle(output) # if output = -0.1, returns -10degree, if output = 0.05, return 6degree
+            # maybe wrong? maybe right? maybe need to keep track of maestro current position
+            # and use the range to be -50 to 50, if x = 20 above, and add or subtract output
+            # from current steering pos <- looks good!
+            # output_to_pololu_value = min_max_scale(output)
+            # convert_output_to_maestro_int # take output, get 1000-2000 value for our steering angle
+            # call_servo_with_int(output) # get byte seq, and write to file
             print(output)
+            maestro_output = min_max_scale(output, -max_output, max_output, -50, 50)
+            write_serial_byte_string(channel=1, target=maestro_output)
 
         rospy.sleep(0.5)
 
