@@ -63,7 +63,7 @@ def control_loop():
     # hash out things in control loop that do anything, so it just spins and prints or something
     # then we test ctrl+c
     # Do not forget to add all these files to CMake :)
-    car.steering = 1800
+    # car.steering = 1800
     rospy.sleep(1)
 
     while not rospy.is_shutdown():
