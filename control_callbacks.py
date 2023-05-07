@@ -6,12 +6,12 @@ from cv_bridge import CvBridge, CvBridgeError
 import time
 import os
 
-from control_classes import PhysicalCar
-from control_classes import PIDController
-from control_classes import SensorData
-from control_classes import ImageData
+from car_control.control_classes import PhysicalCar
+from car_control.control_classes import PIDController
+from car_control.control_classes import SensorData
+from car_control.control_classes import ImageData
 
-from utils import write_serial_byte_string
+from car_control.utils import write_serial_byte_string
 
 
 def imu_callback(data, sensor_data):
