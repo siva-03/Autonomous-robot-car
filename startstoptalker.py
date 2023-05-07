@@ -2,7 +2,7 @@
 # license removed for brevity
 import rospy
 from std_msgs.msg import String
-import keyboard
+from pynput import keyboard
 
 
 class StopStartData:
@@ -11,8 +11,11 @@ class StopStartData:
 
 
 def on_key_press(event, obj):
-    print('Key {} was pressed.'.format(event.name))
-    obj.is_started = not obj.is_started
+    try:
+        print('Key {} was pressed.'.format(event.name))
+        obj.is_started = not obj.is_started
+    except AttributeError:
+        print('noob')
 
 
 def talker():
@@ -23,9 +26,10 @@ def talker():
     # initialize to false
     start_stop_data.is_started = False
 
+    with keyboard.Listener(on_press=on_key_press) as listener:
+        listener.join()
+
     while not rospy.is_shutdown():
-        keyboard.on_press(on_key_press)
-        keyboard.wait()
         rospy.loginfo(str(start_stop_data.is_started))
         pub.publish(str(start_stop_data.is_started))
         rospy.spin()
