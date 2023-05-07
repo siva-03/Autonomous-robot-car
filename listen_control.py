@@ -11,20 +11,20 @@ import os
 # import cv2
 # import matplotlib.pyplot as plt
 
-from car_control.scripts.control_classes import PhysicalCar
-from car_control.scripts.control_classes import PIDController
-from car_control.scripts.control_classes import SensorData
-from car_control.scripts.control_classes import ImageData
+from control_classes import PhysicalCar
+from control_classes import PIDController
+from control_classes import SensorData
+from control_classes import ImageData
 
-from car_control.scripts.control_callbacks import imu_callback
-from car_control.scripts.control_callbacks import manual_speed_callback
-from car_control.scripts.control_callbacks import pid_param_callback
-from car_control.scripts.control_callbacks import camera_callback
-from car_control.scripts.control_callbacks import depth_callback
+from control_callbacks import imu_callback
+from control_callbacks import manual_speed_callback
+from control_callbacks import pid_param_callback
+from control_callbacks import camera_callback
+from control_callbacks import depth_callback
 
-from car_control.scripts.utils import min_max_scale
-from car_control.scripts.utils import get_difference_with_threshold
-from car_control.scripts.utils import write_serial_byte_string
+from utils import min_max_scale
+from utils import get_difference_with_threshold
+from utils import write_serial_byte_string
 
 
 # Main control loop for the listener script

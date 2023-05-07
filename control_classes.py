@@ -3,7 +3,7 @@
 import time
 import os
 
-from car_control.scripts.utils import write_serial_byte_string
+from utils import write_serial_byte_string
 
 
 class PhysicalCar:
