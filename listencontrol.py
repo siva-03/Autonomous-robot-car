@@ -207,7 +207,7 @@ def control_loop():
             rospy.sleep(0.05)
     except KeyboardInterrupt:
         print("INTERRUPTING!!!!")
-        write_serial_byte_string(channel=2, target=car_current_wheel)
+        write_serial_byte_string(channel=2, target=1500)
 
 
 if __name__ == '__main__':
