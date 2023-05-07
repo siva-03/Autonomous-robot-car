@@ -33,7 +33,7 @@ def control_loop():
     # Initialization:
     print("Entering control loop. Car immediately initializing and centering")
     # Initialize Car Physically (this will set the wheels and motor to 1500...!)
-    car = PhysicalCar(steering_channel=2, motor_channel=1)
+    car = PhysicalCar(steering_channel=3, motor_channel=2)
     # so we might want to sleep and chill out for a second
     rospy.sleep(1)
     print("car successfully initialized, continuing now...")
@@ -106,5 +106,6 @@ if __name__ == '__main__':
     except rospy.ROSInterruptException:
         # Ctrl+C or rosnode kill ... was detected
         print("terminating...")
-        write_serial_byte_string(channel=1, target=1500)
+        # write_serial_byte_string(channel=1, target=1500)
         write_serial_byte_string(channel=2, target=1500)
+        write_serial_byte_string(channel=3, target=1500)

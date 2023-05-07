@@ -46,7 +46,7 @@ def get_difference_with_threshold(orig_arr, thresh):
 
 
 def write_serial_byte_string(channel=1, target=1500):
-    if 1000 <= target <= 2000 and 1 <= channel <= 2:
+    if 1000 <= target <= 2000 and 1 <= channel <= 4:
         print("received cmd to write to channel ?, target: ", str(target))
         # create serial bytes array
         # initialize with command byte, maestro, always this

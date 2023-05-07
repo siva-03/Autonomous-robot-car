@@ -8,7 +8,7 @@ from car_control.utils import write_serial_byte_string
 
 
 class PhysicalCar:
-    def __init__(self, steering_channel=2, motor_channel=1):
+    def __init__(self, steering_channel=3, motor_channel=2):
         self.steering_channel = steering_channel
         self.motor_channel = motor_channel
         self.__steering = None
