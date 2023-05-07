@@ -70,8 +70,8 @@ def write_serial_byte_string(channel=1, target=1500):
 
         echo_string = r'sudo echo -n -e "\\' + serial_bytes[0] + r'\\' + serial_bytes[1] + r'\\' + serial_bytes[2] + r'\\' + serial_bytes[3] + r'" > /dev/ttyACM0'
         # \x84\x01\x70\x2e" > /dev/ttyACM0'
-        # print("trying to turn with bytes: ")
-        # print(echo_string)
+        print("trying to turn with bytes: ")
+        print(echo_string)
         os.system(echo_string)
     else:
         print("target was not between 1000 and 2000, or channel not 1 or 2")
