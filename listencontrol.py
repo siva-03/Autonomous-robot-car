@@ -140,6 +140,7 @@ def control_loop():
     last_time = start_time
 
     #  Initialize Car
+
     car_current_wheel = 1500
     write_serial_byte_string(channel=2, target=1500)
     rospy.sleep(1)
@@ -205,6 +206,9 @@ def control_loop():
             write_serial_byte_string(channel=2, target=car_current_wheel)
 
         rospy.sleep(0.05)
+
+    write_serial_byte_string(channel=1, target=1500)
+    # write_serial_byte_string(channel=2, target=1500)
 
 
 if __name__ == '__main__':
