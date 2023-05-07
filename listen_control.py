@@ -97,15 +97,24 @@ def control_loop():
         rospy.sleep(1)
 
 
+def shutdown_callback():
+    # Ctrl+C or rosnode kill ... was detected
+    print("terminating from callback...")
+    # write_serial_byte_string(channel=1, target=1500)
+    write_serial_byte_string(channel=2, target=1500)
+    write_serial_byte_string(channel=3, target=1500)
+
+
 if __name__ == '__main__':
     # https://stackoverflow.com/questions/60035686/how-multiple-run-ros-init-node-in-one-python-script
     # "You should centralize the initialization of the node at the beginning of the main script"
     rospy.init_node('listen_control', anonymous=True)
+    rospy.on_shutdown(shutdown_callback)
     try:
         control_loop()
     except rospy.ROSInterruptException:
         # Ctrl+C or rosnode kill ... was detected
-        print("terminating...")
+        print("terminating old...")
         # write_serial_byte_string(channel=1, target=1500)
         write_serial_byte_string(channel=2, target=1500)
         write_serial_byte_string(channel=3, target=1500)
