@@ -22,9 +22,9 @@ def imu_callback(data, sensor_data):
 # and makes a call to the PhysicalCar motor if is int-like string in range
 # otherwise, if it hears something other than a valid int, just writes 1500
 def manual_speed_callback(data, param_car):
-    print("HEY!!!!!!!!!!!!!!!!!!! Saw speed: ", str(data))
+    print("HEY!!!!!!!!!!!!!!!!!!! Saw speed: ", str(data.data))
     try:
-        sanitized_data = int(data)
+        sanitized_data = int(str(data.data))
         if 1000 <= sanitized_data <= 2000:
             param_car.motor = sanitized_data
         else:
@@ -38,7 +38,7 @@ def manual_speed_callback(data, param_car):
 # then also resets the integral and last error and time to 0, so reinitializes
 # Assumes the user sends PID as "1.0,0.01,0.001" for P,I,D vals
 def pid_param_callback(data, param_controller):
-    kpid_arr = data.split(',')
+    kpid_arr = str(data.data).split(',')
     try:
         param_controller.kp = float(kpid_arr[0])
         param_controller.ki = float(kpid_arr[1])
