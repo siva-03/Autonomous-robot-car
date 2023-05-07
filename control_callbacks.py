@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # license removed for brevity
+import rospy
 import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
 import time
