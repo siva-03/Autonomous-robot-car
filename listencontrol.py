@@ -122,94 +122,93 @@ def write_serial_byte_string(channel=1, target=1500):
 
 # Main control loop for the listener script
 def control_loop():
-    rospy.init_node('robotcontrol', anonymous=True)
-    sensor_data = SensorData()
-    start_stop_data = StopStartData()
-    camera_data = ImageData()
-    depth_data = ImageData()
-    
-    bridge = CvBridge()
+    try:
+        rospy.init_node('robotcontrol', anonymous=True)
+        sensor_data = SensorData()
+        start_stop_data = StopStartData()
+        camera_data = ImageData()
+        depth_data = ImageData()
 
-    rospy.Subscriber("chatter", String, imu_callback, callback_args=sensor_data)
-    # rospy.Subscriber("stopstart", String, stop_start_callback, callback_args=start_stop_data)
-    rospy.Subscriber("camera/color/image_raw", Image, camera_callback, callback_args=(camera_data, bridge))
-    rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
+        bridge = CvBridge()
 
-    # pid initialization
-    kp = 1.0
-    ki = 0
-    kd = 0.01
-    set_point = 0.0  # balanced depth on both sides (perhaps we could also weight depth toward center more)
-    threshold = 10000  # for depth
-    error = 0.0
-    last_error = 0.0
-    integral = 0.0
-    discretization_amount = 10
-    max_output = threshold / discretization_amount  # how much pi / x radians to move at once
-    start_time = time.time()
-    last_time = start_time
+        rospy.Subscriber("chatter", String, imu_callback, callback_args=sensor_data)
+        # rospy.Subscriber("stopstart", String, stop_start_callback, callback_args=start_stop_data)
+        rospy.Subscriber("camera/color/image_raw", Image, camera_callback, callback_args=(camera_data, bridge))
+        rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
 
-    #  Initialize Car
+        # pid initialization
+        kp = 1.0
+        ki = 0
+        kd = 0.01
+        set_point = 0.0  # balanced depth on both sides (perhaps we could also weight depth toward center more)
+        threshold = 10000  # for depth
+        error = 0.0
+        last_error = 0.0
+        integral = 0.0
+        discretization_amount = 10
+        max_output = threshold / discretization_amount  # how much pi / x radians to move at once
+        start_time = time.time()
+        last_time = start_time
 
-    car_current_wheel = 1500
-    write_serial_byte_string(channel=2, target=1500)
-    rospy.sleep(1)
+        #  Initialize Car
 
-    while not rospy.is_shutdown():
-        if depth_data.image_data is not None:
-            position = get_difference_with_threshold(depth_data.image_data, threshold)
-            print("im currently at camera diff position: ", position)
-            # Get current time
-            current_time = time.time()
+        car_current_wheel = 1500
+        write_serial_byte_string(channel=2, target=1500)
+        rospy.sleep(1)
 
-            # Calculate time elapsed since last iteration
-            delta_time = current_time - last_time
+        while not rospy.is_shutdown():
+            if depth_data.image_data is not None:
+                position = get_difference_with_threshold(depth_data.image_data, threshold)
+                print("im currently at camera diff position: ", position)
+                # Get current time
+                current_time = time.time()
 
-            # Calculate error
-            error = set_point - position
+                # Calculate time elapsed since last iteration
+                delta_time = current_time - last_time
 
-            # Calculate derivative of error
-            if delta_time > 0:
-                error_derivative = (error - last_error) / delta_time
-            else:
-                error_derivative = 0
+                # Calculate error
+                error = set_point - position
 
-            # Calculate integral term
-            integral += error * delta_time
+                # Calculate derivative of error
+                if delta_time > 0:
+                    error_derivative = (error - last_error) / delta_time
+                else:
+                    error_derivative = 0
 
-            # Calculate output value
-            output = kp * error + ki * integral + kd * error_derivative
-            print("output before min/max: ", output)
+                # Calculate integral term
+                integral += error * delta_time
 
-            # Limit output to maximum value
-            output = min(max_output, max(-max_output, output))
-            # get_desired_angle(output) # if output = -0.1, returns -10degree, if output = 0.05, return 6degree
-            # maybe wrong? maybe right? maybe need to keep track of maestro current position
-            # and use the range to be -50 to 50, if x = 20 above, and add or subtract output
-            # from current steering pos <- looks good!
-            # output_to_pololu_value = min_max_scale(output)
-            # convert_output_to_maestro_int # take output, get 1000-2000 value for our steering angle
-            # call_servo_with_int(output) # get byte seq, and write to file
-            print("output after min/max: ", output)
-            maestro_output = min_max_scale(output,
-                                           -max_output,
-                                           max_output,
-                                           (-1000/discretization_amount),
-                                           (1000/discretization_amount))
-            print("maestro output: ", maestro_output)
-            car_current_wheel += maestro_output
-            print("car current wheel after output: ", car_current_wheel)
-            car_current_wheel = min(2000, max(car_current_wheel, 1000))
-            print("car current wheel after CHOPPING: ", car_current_wheel)
-            write_serial_byte_string(channel=2, target=car_current_wheel)
+                # Calculate output value
+                output = kp * error + ki * integral + kd * error_derivative
+                print("output before min/max: ", output)
 
-        rospy.sleep(0.05)
+                # Limit output to maximum value
+                output = min(max_output, max(-max_output, output))
+                # get_desired_angle(output) # if output = -0.1, returns -10degree, if output = 0.05, return 6degree
+                # maybe wrong? maybe right? maybe need to keep track of maestro current position
+                # and use the range to be -50 to 50, if x = 20 above, and add or subtract output
+                # from current steering pos <- looks good!
+                # output_to_pololu_value = min_max_scale(output)
+                # convert_output_to_maestro_int # take output, get 1000-2000 value for our steering angle
+                # call_servo_with_int(output) # get byte seq, and write to file
+                print("output after min/max: ", output)
+                maestro_output = min_max_scale(output,
+                                               -max_output,
+                                               max_output,
+                                               (-1000/discretization_amount),
+                                               (1000/discretization_amount))
+                print("maestro output: ", maestro_output)
+                car_current_wheel += maestro_output
+                print("car current wheel after output: ", car_current_wheel)
+                car_current_wheel = min(2000, max(car_current_wheel, 1000))
+                print("car current wheel after CHOPPING: ", car_current_wheel)
+                write_serial_byte_string(channel=2, target=car_current_wheel)
+
+            rospy.sleep(0.05)
+    except KeyboardInterrupt:
+        print("INTERRUPTING!!!!")
+        write_serial_byte_string(channel=2, target=car_current_wheel)
 
 
 if __name__ == '__main__':
-    try:
-        control_loop()
-    except KeyboardInterrupt:
-        # write_serial_byte_string(channel=1, target=1500)
-        write_serial_byte_string(channel=2, target=1500)
-
+    control_loop()
