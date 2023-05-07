@@ -121,7 +121,7 @@ def control_loop():
     bridge = CvBridge()
 
     rospy.Subscriber("chatter", String, imu_callback, callback_args=sensor_data)
-    # rospy.Subscriber("camera/color/image_raw", Image, camera_callback, callback_args=(camera_data, bridge))
+    rospy.Subscriber("camera/color/image_raw", Image, camera_callback, callback_args=(camera_data, bridge))
     rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
     flag = False
 
@@ -134,7 +134,8 @@ def control_loop():
     error = 0.0
     last_error = 0.0
     integral = 0.0
-    max_output = threshold / 20  # how much pi / x radians to move at once, x = 20 here; maestro would move 50
+    discretization_amount = 10
+    max_output = threshold / discretization_amount  # how much pi / x radians to move at once
     start_time = time.time()
     last_time = start_time
 
@@ -148,9 +149,10 @@ def control_loop():
     while not rospy.is_shutdown():
         # Main Loop
         # print("main loop imu: ", sensor_data.imu_data)
+        
+        # if camera_data.image_data is not None:
 
-        if depth_data.image_data is not None and not flag:
-
+        if depth_data.image_data is not None:
             position = get_difference_with_threshold(depth_data.image_data, threshold)
             print("im currently at camera diff position: ", position)
             # Get current time
@@ -185,7 +187,11 @@ def control_loop():
             # convert_output_to_maestro_int # take output, get 1000-2000 value for our steering angle
             # call_servo_with_int(output) # get byte seq, and write to file
             print("output after min/max: ", output)
-            maestro_output = min_max_scale(output, -max_output, max_output, -50, 50)
+            maestro_output = min_max_scale(output,
+                                           -max_output,
+                                           max_output,
+                                           (-1000/discretization_amount),
+                                           (1000/discretization_amount))
             print("maestro output: ", maestro_output)
             car_current_wheel += maestro_output
             print("car current wheel after output: ", car_current_wheel)
@@ -193,7 +199,7 @@ def control_loop():
             print("car current wheel after CHOPPING: ", car_current_wheel)
             write_serial_byte_string(channel=2, target=car_current_wheel)
 
-        rospy.sleep(0.1)
+        rospy.sleep(0.05)
 
 
 if __name__ == '__main__':
