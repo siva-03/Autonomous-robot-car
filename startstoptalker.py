@@ -16,6 +16,7 @@ def talker():
     while not rospy.is_shutdown():
         user_input = input()
         user_input = str(user_input)
+        print('user input coming in: ', user_input)
         rospy.loginfo(user_input)
         pub.publish(user_input)
         rospy.spin()

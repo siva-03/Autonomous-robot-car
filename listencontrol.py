@@ -131,7 +131,7 @@ def control_loop():
     bridge = CvBridge()
 
     rospy.Subscriber("chatter", String, imu_callback, callback_args=sensor_data)
-    rospy.Subscriber("stopstart", String, stop_start_callback, callback_args=start_stop_data)
+    rospy.Subscriber("startstop", String, stop_start_callback, callback_args=start_stop_data)
     rospy.Subscriber("camera/color/image_raw", Image, camera_callback, callback_args=(camera_data, bridge))
     rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
 
