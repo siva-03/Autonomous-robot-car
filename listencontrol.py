@@ -122,41 +122,42 @@ def write_serial_byte_string(channel=1, target=1500):
 
 # Main control loop for the listener script
 def control_loop():
-    try:
-        rospy.init_node('robotcontrol', anonymous=True)
-        sensor_data = SensorData()
-        start_stop_data = StopStartData()
-        camera_data = ImageData()
-        depth_data = ImageData()
+    rospy.init_node('robotcontrol', anonymous=True)
+    sensor_data = SensorData()
+    start_stop_data = StopStartData()
+    camera_data = ImageData()
+    depth_data = ImageData()
 
-        bridge = CvBridge()
+    bridge = CvBridge()
 
-        rospy.Subscriber("chatter", String, imu_callback, callback_args=sensor_data)
-        # rospy.Subscriber("stopstart", String, stop_start_callback, callback_args=start_stop_data)
-        rospy.Subscriber("camera/color/image_raw", Image, camera_callback, callback_args=(camera_data, bridge))
-        rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
+    rospy.Subscriber("chatter", String, imu_callback, callback_args=sensor_data)
+    rospy.Subscriber("stopstart", String, stop_start_callback, callback_args=start_stop_data)
+    rospy.Subscriber("camera/color/image_raw", Image, camera_callback, callback_args=(camera_data, bridge))
+    rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
 
-        # pid initialization
-        kp = 1.0
-        ki = 0
-        kd = 0.01
-        set_point = 0.0  # balanced depth on both sides (perhaps we could also weight depth toward center more)
-        threshold = 10000  # for depth
-        error = 0.0
-        last_error = 0.0
-        integral = 0.0
-        discretization_amount = 10
-        max_output = threshold / discretization_amount  # how much pi / x radians to move at once
-        start_time = time.time()
-        last_time = start_time
+    # pid initialization
+    kp = 1.0
+    ki = 0
+    kd = 0.01
+    set_point = 0.0  # balanced depth on both sides (perhaps we could also weight depth toward center more)
+    threshold = 10000  # for depth
+    error = 0.0
+    last_error = 0.0
+    integral = 0.0
+    discretization_amount = 10
+    max_output = threshold / discretization_amount  # how much pi / x radians to move at once
+    start_time = time.time()
+    last_time = start_time
 
-        #  Initialize Car
+    #  Initialize Car
 
-        car_current_wheel = 1500
-        write_serial_byte_string(channel=2, target=1500)
-        rospy.sleep(1)
+    car_current_wheel = 1500
+    write_serial_byte_string(channel=2, target=1500)
+    rospy.sleep(1)
 
-        while not rospy.is_shutdown():
+    while not rospy.is_shutdown():
+        if start_stop_data.is_started:
+
             if depth_data.image_data is not None:
                 position = get_difference_with_threshold(depth_data.image_data, threshold)
                 print("im currently at camera diff position: ", position)
@@ -205,9 +206,9 @@ def control_loop():
                 write_serial_byte_string(channel=2, target=car_current_wheel)
 
             rospy.sleep(0.05)
-    except KeyboardInterrupt:
-        print("INTERRUPTING!!!!")
-        write_serial_byte_string(channel=2, target=1500)
+
+        else:
+            write_serial_byte_string(channel=2, target=1500)
 
 
 if __name__ == '__main__':
