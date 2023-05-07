@@ -76,7 +76,7 @@ def control_loop():
             # Instruct PID Controller to take step, based on position and desired set point
             # and get back the controller's output
             output = pid_controller.step(position, set_point)
-            # print("output before min/max: ", output)
+            print("output before min/max: ", output)
 
             # Limit output to maximum value, because we don't want to over-react
             output = min(max_output, max(-max_output, output))
@@ -92,7 +92,7 @@ def control_loop():
 
             # Update current wheel position based on Maestro output, clipped between 1000 and 2000
             # print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
-            # car.steering = min(2000, max((car.steering + maestro_output), 1000))
+            car.steering = min(2000, max((car.steering + maestro_output), 1000))
 
         rospy.sleep(1)
 
