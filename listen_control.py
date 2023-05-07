@@ -92,7 +92,7 @@ def control_loop():
             print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
             # car.steering = min(2000, max((car.steering + maestro_output), 1000))
 
-        rospy.sleep(0.05)
+        rospy.sleep(1)
 
 
 if __name__ == '__main__':
