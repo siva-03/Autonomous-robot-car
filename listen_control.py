@@ -90,7 +90,7 @@ def control_loop():
 
             # Update current wheel position based on Maestro output, clipped between 1000 and 2000
             print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
-            # car.steering = min(2000, max((car.steering + maestro_output), 1000))
+            car.steering = min(2000, max((car.steering + maestro_output), 1000))
 
         rospy.sleep(3)
 
