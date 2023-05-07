@@ -18,6 +18,7 @@ from car_control.control_classes import ImageData
 
 from car_control.control_callbacks import imu_callback
 from car_control.control_callbacks import manual_speed_callback
+from car_control.control_callbacks import manual_steer_callback
 from car_control.control_callbacks import pid_param_callback
 from car_control.control_callbacks import camera_callback
 from car_control.control_callbacks import depth_callback
@@ -55,6 +56,7 @@ def control_loop():
     bridge = CvBridge()
     rospy.Subscriber("chatter", String, imu_callback, callback_args=sensor_data)
     rospy.Subscriber("manual_speed", String, manual_speed_callback, callback_args=car)
+    rospy.Subscriber("manual_steer", String, manual_steer_callback, callback_args=car)
     rospy.Subscriber("manual_pid", String, pid_param_callback, callback_args=pid_controller)
     rospy.Subscriber("camera/color/image_raw", Image, camera_callback, callback_args=(camera_data, bridge))
     rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
@@ -74,11 +76,11 @@ def control_loop():
             # Instruct PID Controller to take step, based on position and desired set point
             # and get back the controller's output
             output = pid_controller.step(position, set_point)
-            print("output before min/max: ", output)
+            # print("output before min/max: ", output)
 
             # Limit output to maximum value, because we don't want to over-react
             output = min(max_output, max(-max_output, output))
-            print("output after min/max: ", output)
+            # print("output after min/max: ", output)
 
             # Then scale it for our Maestro controller, which has a range of 1000
             maestro_output = min_max_scale(output,
@@ -86,13 +88,13 @@ def control_loop():
                                            max_output,
                                            (-1000/discretization_amount),
                                            (1000/discretization_amount))
-            print("maestro output: ", maestro_output)
+            # print("maestro output: ", maestro_output)
 
             # Update current wheel position based on Maestro output, clipped between 1000 and 2000
-            print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
-            car.steering = min(2000, max((car.steering + maestro_output), 1000))
+            # print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
+            # car.steering = min(2000, max((car.steering + maestro_output), 1000))
 
-        rospy.sleep(0.05)
+        rospy.sleep(1)
 
 
 if __name__ == '__main__':

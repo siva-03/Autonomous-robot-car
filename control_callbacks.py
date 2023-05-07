@@ -34,6 +34,22 @@ def manual_speed_callback(data, param_car):
         print("error: manual speed not an int")
 
 
+# Takes the callback data and PhysicalCar,
+# and makes a call to the PhysicalCar motor if is int-like string in range
+# otherwise, if it hears something other than a valid int, just writes 1500
+def manual_steer_callback(data, param_car):
+    print("HEY!!!!!!!!!!!!!!!!!!! Saw steer: ", str(data.data))
+    try:
+        sanitized_data = int(str(data.data))
+        if 1000 <= sanitized_data <= 2000:
+            param_car.steering = sanitized_data
+        else:
+            print("error: manual speed was int, but not in range of 1000-2000: ", sanitized_data)
+            param_car.steering = 1500
+    except ValueError:
+        print("error: manual speed not an int")
+
+
 # Takes callback data and PIDController, and sets the PID properties for p, i, d values
 # then also resets the integral and last error and time to 0, so reinitializes
 # Assumes the user sends PID as "1.0,0.01,0.001" for P,I,D vals
