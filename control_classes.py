@@ -29,10 +29,15 @@ class PhysicalCar:
 
     @steering.setter
     def steering(self, value):
-        sanitized_value = int(value)
-        if 1000 <= sanitized_value <= 2000:
-            self.__steering = value
-            write_serial_byte_string(channel=self.steering_channel, target=sanitized_value)
+        try:
+            sanitized_value = int(value)
+            if 1000 <= sanitized_value <= 2000:
+                self.__steering = value
+                write_serial_byte_string(channel=self.steering_channel, target=sanitized_value)
+            else:
+                print("error: steering setter value not in maestro 1000-2000 range but was int: ", sanitized_value)
+        except ValueError:
+            print("error: steering setter value not an int")
 
     @steering.deleter
     def steering(self):
@@ -46,10 +51,15 @@ class PhysicalCar:
 
     @motor.setter
     def motor(self, value):
-        sanitized_value = int(value)
-        if 1000 <= sanitized_value <= 2000:
-            self.__motor = value
-            write_serial_byte_string(channel=self.motor_channel, target=sanitized_value)
+        try:
+            sanitized_value = int(value)
+            if 1000 <= sanitized_value <= 2000:
+                self.__motor = value
+                write_serial_byte_string(channel=self.motor_channel, target=sanitized_value)
+            else:
+                print("error: motor setter received an int, but not in range 1000-2000: ", sanitized_value)
+        except ValueError:
+            print("error: motor setter value not an int")
 
     @motor.deleter
     def motor(self):

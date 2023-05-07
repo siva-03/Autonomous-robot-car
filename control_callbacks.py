@@ -21,10 +21,15 @@ def imu_callback(data, sensor_data):
 # and makes a call to the PhysicalCar motor if is int-like string in range
 # otherwise, if it hears something other than a valid int, just writes 1500
 def manual_speed_callback(data, param_car):
-    if data.isdigit() and 1000 <= int(data) <= 2000:
-        param_car.motor = int(data)
-    else:
-        param_car.motor = 1500
+    try:
+        sanitized_data = int(data)
+        if 1000 <= sanitized_data <= 2000:
+            param_car.motor = sanitized_data
+        else:
+            print("error: manual speed was int, but not in range of 1000-2000: ", sanitized_data)
+            param_car.motor = 1500
+    except ValueError:
+        print("error: manual speed not an int")
 
 
 # Takes callback data and PIDController, and sets the PID properties for p, i, d values
@@ -32,10 +37,13 @@ def manual_speed_callback(data, param_car):
 # Assumes the user sends PID as "1.0,0.01,0.001" for P,I,D vals
 def pid_param_callback(data, param_controller):
     kpid_arr = data.split(',')
-    param_controller.kp = float(kpid_arr[0])
-    param_controller.ki = float(kpid_arr[1])
-    param_controller.kd = float(kpid_arr[2])
-    param_controller.reset()
+    try:
+        param_controller.kp = float(kpid_arr[0])
+        param_controller.ki = float(kpid_arr[1])
+        param_controller.kd = float(kpid_arr[2])
+        param_controller.reset()
+    except ValueError:
+        print("error: one or more of the floats passed to PID were invalid")
 
 
 def camera_callback(data, param_data):
