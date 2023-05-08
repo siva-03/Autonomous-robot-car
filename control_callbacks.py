@@ -1,4 +1,4 @@
-#!/home/odroid/.pyenv/shims/python
+#!/usr/bin/env python
 # license removed for brevity
 import rospy
 import numpy as np
