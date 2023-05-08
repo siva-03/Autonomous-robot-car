@@ -77,7 +77,7 @@ def write_serial_byte_string(channel=1, target=1500):
         print("target was not between 1000 and 2000, or channel not 1 or 2")
 
 
-def stop_sign_detector(rgb_image_np, num_parts=3):
+def stop_sign_detector(rgb_image_np, num_parts=1):
     # segment image into parts
     # compute the size of each part
     part_size = rgb_image_np.shape[1] // num_parts
@@ -94,8 +94,14 @@ def stop_sign_detector(rgb_image_np, num_parts=3):
         # Find the indices where the mask is True
         indices = np.where(mask)
 
+        print("rgb top left corner r: ", rgb_image_np[0, 0, 0])
+        print("rgb top left corner g: ", rgb_image_np[0, 0, 1])
+        print("rgb top left corner b: ", rgb_image_np[0, 0, 2])
+        print("rgb top left corner r: ", rgb_image_np[480/2, 640/2, 0])
+        print("rgb top left corner g: ", rgb_image_np[480/2, 640/2, 1])
+        print("rgb top left corner b: ", rgb_image_np[480/2, 640/2, 2])
         print("ALL INDICES: ", indices)
-        print("gpt num red pixels: ", (indices[0].size * indices[1].size))
+        print("gpt num red pixels: ", indices[0].size)
         print("pixels needed to qualify = ", 0.25*(part.shape[0]*part.shape[1]))
         print("is stop sign?: ", ((indices[0].size * indices[1].size) > 0.25*(part.shape[0]*part.shape[1])))
 
