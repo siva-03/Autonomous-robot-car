@@ -11,6 +11,7 @@ import os
 import torch
 # import cv2
 # import matplotlib.pyplot as plt
+import sys
 
 from car_control.control_classes import PhysicalCar
 from car_control.control_classes import PIDController
@@ -32,6 +33,8 @@ from car_control.utils import stop_sign_detector
 
 # Main control loop for the listener script
 def control_loop():
+    print('python version:')
+    print(sys.version)
     # Initialization:
     print("entering control loop, downloading weights")
     # Load the pretrained YOLOv5s model
