@@ -107,8 +107,13 @@ def write_serial_byte_string(channel=1, target=1500):
 
 
 def stop_sign_detector(bgr_image_cv):
+    file_path = os.path.join(os.path.dirname(__file__), 'car_control/stop_sign.xml')
+
+    with open(file_path, 'r') as file:
+        xml_file = file.read()
+
     # Load the stop sign Haar cascade classifier
-    stop_cascade = cv2.CascadeClassifier('stop_sign.xml')
+    stop_cascade = cv2.CascadeClassifier(xml_file)
 
     # Convert the image to grayscale
     gray = cv2.cvtColor(bgr_image_cv, cv2.COLOR_BGR2GRAY)

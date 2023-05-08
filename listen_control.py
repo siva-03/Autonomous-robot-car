@@ -132,7 +132,7 @@ def control_loop():
         #     print("no depth data, centering car")
         #     car.center()
 
-        if camera_data.image_data is not None:
+        if camera_data.image_data is not None and camera_data.original_cv_img is not None:
             print("using camera RGB to check for stop sign")
             is_stop_sign = stop_sign_detector(camera_data.original_cv_img)
             print("is stop sign? ", is_stop_sign)
