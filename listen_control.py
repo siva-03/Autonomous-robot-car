@@ -8,6 +8,7 @@ import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
 import time
 import os
+import torch
 # import cv2
 # import matplotlib.pyplot as plt
 
@@ -32,7 +33,11 @@ from car_control.utils import stop_sign_detector
 # Main control loop for the listener script
 def control_loop():
     # Initialization:
-    print("Entering control loop. Car immediately initializing and centering")
+    print("entering control loop, downloading weights")
+    # Load the pretrained YOLOv5s model
+    yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+
+    print("Car initializing and centering")
     # Initialize Car Physically (this will set the wheels and motor to 1500...!)
     car = PhysicalCar(steering_channel=3, motor_channel=2)
     # so we might want to sleep and chill out for a second
@@ -65,7 +70,7 @@ def control_loop():
     while not rospy.is_shutdown():
         if camera_data.image_data is not None:
             print("using camera RGB to check for stop sign")
-            is_stop_sign = stop_sign_detector(camera_data.image_data)
+            is_stop_sign = stop_sign_detector(camera_data.image_data, yolo_model)
             print("is stop sign? ", is_stop_sign)
 
         # and false!
