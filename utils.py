@@ -79,7 +79,6 @@ def write_serial_byte_string(channel=1, target=1500):
 
 
 def stop_sign_detector(rgb_image_np, num_parts=1):
-    rgb_image_np = np.random.randint(0, 255, size=(480, 640, 3))
     red_pixels = rgb_image_np[..., 0] > (rgb_image_np[..., 1] + 100)
     red_pixels &= rgb_image_np[..., 0] > (rgb_image_np[..., 2] + 100)
     num_pixels = np.sum(red_pixels)
