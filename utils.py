@@ -94,7 +94,7 @@ def write_serial_byte_string(channel=1, target=1500):
 
 
 def check_obstacle_in_front(rgb_image_np):
-    return True
+    return False
 
 
 def check_wall_in_prox(rgb_image_np):
