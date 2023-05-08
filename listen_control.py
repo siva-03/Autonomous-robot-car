@@ -28,8 +28,9 @@ from car_control.control_callbacks import depth_callback
 from car_control.utils import min_max_scale
 from car_control.utils import get_difference_with_threshold
 from car_control.utils import write_serial_byte_string
-from car_control.utils import stop_sign_detector
-
+# from car_control.utils import stop_sign_detector
+from car_control.utils import check_obstacle_in_front
+from car_control.utils import check_wall_in_prox
 
 # Main control loop for the listener script
 def control_loop():
@@ -38,7 +39,7 @@ def control_loop():
     # Initialization:
     print("entering control loop, downloading weights")
     # Load the pretrained YOLOv5s model
-    yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+    # yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 
     print("Car initializing and centering")
     # Initialize Car Physically (this will set the wheels and motor to 1500...!)
@@ -84,7 +85,7 @@ def control_loop():
                 if autonomous_mode == "turn":
                     # turn until IMU angular reaches some value
                     car.steering = 2000 if turn_right else 1000
-                    autonomous_turn_angle += ..do stuff with IMU
+                    # autonomous_turn_angle += ..do stuff with IMU
                     if autonomous_turn_angle > 90:
                         autonomous_mode = "straight"
                         autonomous_turn_angle = 0
@@ -92,14 +93,14 @@ def control_loop():
                 elif autonomous_mode == "straight":
 
                     # check if depth data in middle third is lower than corner_threshold
-                    if check_wall_in_prox(depth_data.image_data):
+                    if not check_wall_in_prox(depth_data.image_data):
                         autonomous_mode = "turn"
                     else:
 
-                        if camera_data.image_data is not None:
-                            print("using camera RGB to check for stop sign")
-                            is_stop_sign = stop_sign_detector(camera_data.image_data, yolo_model)
-                            print("is stop sign? ", is_stop_sign)
+                        # if camera_data.image_data is not None:
+                        #     print("using camera RGB to check for stop sign")
+                        #     is_stop_sign = stop_sign_detector(camera_data.image_data, yolo_model)
+                        #     print("is stop sign? ", is_stop_sign)
 
                         position = get_difference_with_threshold(depth_data.image_data, threshold)
                         print("im currently at camera diff position: ", position)
