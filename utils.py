@@ -79,29 +79,20 @@ def write_serial_byte_string(channel=1, target=1500):
 
 
 def stop_sign_detector(rgb_image_np, num_parts=1):
-    # segment image into parts
-    # compute the size of each part
-    part_size = rgb_image_np.shape[1] // num_parts
+    rgb_image_np = np.random.randint(0, 255, size=(480, 640, 3))
+    red_pixels = rgb_image_np[..., 0] > (rgb_image_np[..., 1] + 100)
+    red_pixels &= rgb_image_np[..., 0] > (rgb_image_np[..., 2] + 100)
+    num_pixels = np.sum(red_pixels)
+    red_mask = red_pixels.astype(np.uint8)
+    # display the binary mask as an image
+    plt.imshow(red_mask, cmap='gray')
+    plt.show()
 
-    # use list comprehension to extract each part of the image
-    parts = [rgb_image_np[:, i*part_size:(i+1)*part_size, :] for i in range(num_parts)]
-
-    # for each part, check each pixel
-    # Check if Red channel is greater than Green and Blue channels by 100
-    for part in parts:
-        red_pixels = part[..., 0] > (part[..., 1] + 100)
-        red_pixels &= part[..., 0] > (part[..., 2] + 100)
-        num_pixels = np.sum(red_pixels)
-        red_mask = red_pixels.astype(np.uint8)
-        # display the binary mask as an image
-        plt.imshow(red_mask, cmap='gray')
-        plt.show()
-
-        print("rgb top left corner r: ", rgb_image_np[0, 0, 0])
-        print("rgb top left corner g: ", rgb_image_np[0, 0, 1])
-        print("rgb top left corner b: ", rgb_image_np[0, 0, 2])
-        print("gpt num red pixels: ", num_pixels)
-        print("pixels needed to qualify = ", 0.25*(part.shape[0]*part.shape[1]))
-        print("is stop sign?: ", num_pixels > 0.25*(part.shape[0]*part.shape[1]))
+    print("rgb top left corner r: ", rgb_image_np[0, 0, 0])
+    print("rgb top left corner g: ", rgb_image_np[0, 0, 1])
+    print("rgb top left corner b: ", rgb_image_np[0, 0, 2])
+    print("gpt num red pixels: ", num_pixels)
+    print("pixels needed to qualify = ", 0.25*(rgb_image_np.shape[0]*rgb_image_np.shape[1]))
+    print("is stop sign?: ", num_pixels > 0.25*(rgb_image_np.shape[0]*rgb_image_np.shape[1]))
 
     # if number of pixels greater than 20% of the image, then return true
