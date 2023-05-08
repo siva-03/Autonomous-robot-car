@@ -88,21 +88,22 @@ def stop_sign_detector(rgb_image_np, num_parts=1):
     # for each part, check each pixel
     # Check if Red channel is greater than Green and Blue channels by 100
     for part in parts:
-        # if R value > B + 100 and R > G + 100
-        mask = (part[:, :, 0] > part[:, :, 1] + 150) & (part[:, :, 0] > part[:, :, 2] + 150)
+        # calculate the absolute difference between red and green channels
+        red_green_diff = np.abs(part[..., 0] - part[..., 1])
 
-        # Find the indices where the mask is True
-        indices = np.where(mask)
+        # calculate the absolute difference between red and blue channels
+        red_blue_diff = np.abs(part[..., 0] - part[..., 2])
+
+        # find the number of pixels where red is 50 higher than green or blue
+        num_pixels = np.sum(np.logical_or(red_green_diff >= 50, red_blue_diff >= 50))
+
+        print(num_pixels)
 
         print("rgb top left corner r: ", rgb_image_np[0, 0, 0])
         print("rgb top left corner g: ", rgb_image_np[0, 0, 1])
         print("rgb top left corner b: ", rgb_image_np[0, 0, 2])
-        print("rgb top left corner r: ", rgb_image_np[240, 320, 0])
-        print("rgb top left corner g: ", rgb_image_np[240, 320, 1])
-        print("rgb top left corner b: ", rgb_image_np[240, 320, 2])
-        print("ALL INDICES: ", indices)
-        print("gpt num red pixels: ", indices[0].size)
+        print("gpt num red pixels: ", num_pixels)
         print("pixels needed to qualify = ", 0.25*(part.shape[0]*part.shape[1]))
-        print("is stop sign?: ", ((indices[0].size * indices[1].size) > 0.25*(part.shape[0]*part.shape[1])))
+        print("is stop sign?: ", num_pixels > 0.25*(part.shape[0]*part.shape[1]))
 
     # if number of pixels greater than 20% of the image, then return true
