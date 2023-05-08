@@ -38,7 +38,7 @@ def control_loop():
     # Initialization:
     print("entering control loop, downloading weights")
     # Load the pretrained YOLOv5s model
-    # yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+    yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 
     print("Car initializing and centering")
     # Initialize Car Physically (this will set the wheels and motor to 1500...!)
