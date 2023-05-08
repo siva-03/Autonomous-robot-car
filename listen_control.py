@@ -134,7 +134,7 @@ def control_loop():
 
         if camera_data.image_data is not None:
             print("using camera RGB to check for stop sign")
-            is_stop_sign = stop_sign_detector(camera_data.image_data)
+            is_stop_sign = stop_sign_detector(camera_data.original_cv_img)
             print("is stop sign? ", is_stop_sign)
 
         rospy.sleep(1)

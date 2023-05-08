@@ -122,6 +122,7 @@ class SensorData:
 
 class ImageData:
     def __init__(self):
+        self.original_cv_img = None
         self.image_data = None
         self.width = None
         self.height = None

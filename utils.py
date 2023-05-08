@@ -110,12 +110,12 @@ def write_serial_byte_string(channel=1, target=1500):
 
 
 
-def stop_sign_detector(rgb_image_np):
+def stop_sign_detector(bgr_image_cv):
     # Load the stop sign Haar cascade classifier
     stop_cascade = cv2.CascadeClassifier('stop_sign.xml')
 
     # Load the image to detect stop signs in
-    img = cv2.imread(rgb_image_np[:, :, ::-1])
+    img = cv2.imread(bgr_image_cv)
 
     # Convert the image to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

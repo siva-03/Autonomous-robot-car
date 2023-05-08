@@ -67,14 +67,15 @@ def pid_param_callback(data, param_controller):
 def camera_callback(data, param_data):
     camera_data = param_data[0]
     bridge = param_data[1]
-    real_img = None
+    real_img_np = None
     try:
         real_img = bridge.imgmsg_to_cv2(data, "bgr8")
-        real_img = np.asarray(real_img)[:, :, ::-1]
+        camera_data.original_cv_img = real_img
+        real_img_np = np.asarray(real_img)[:, :, ::-1]
     except CvBridgeError as e:
         print(e)
 
-    camera_data.image_data = real_img
+    camera_data.image_data = real_img_np
     camera_data.width = data.width
     camera_data.height = data.height
 
@@ -82,13 +83,14 @@ def camera_callback(data, param_data):
 def depth_callback(data, param_data):
     depth_data = param_data[0]
     bridge = param_data[1]
-    real_img = None
+    real_img_np = None
     try:
         real_img = bridge.imgmsg_to_cv2(data)
-        real_img = np.asarray(real_img)
+        depth_data.original_cv_img = real_img
+        real_img_np = np.asarray(real_img)
     except CvBridgeError as e:
         print(e)
 
-    depth_data.image_data = real_img
+    depth_data.image_data = real_img_np
     depth_data.width = data.width
     depth_data.height = data.height
