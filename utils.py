@@ -97,6 +97,6 @@ def stop_sign_detector(rgb_image_np, num_parts=3):
         print("ALL INDICES: ", indices)
         print("gpt num red pixels: ", (indices[0].size * indices[1].size))
         print("pixels needed to qualify = ", 0.25*(part.shape[0]*part.shape[1]))
-        print("is stop sign?: ", (indices[0].size * indices[1].size) > 0.25*(part.shape[0]*part.shape[1])))
+        print("is stop sign?: ", ((indices[0].size * indices[1].size) > 0.25*(part.shape[0]*part.shape[1])))
 
     # if number of pixels greater than 20% of the image, then return true
