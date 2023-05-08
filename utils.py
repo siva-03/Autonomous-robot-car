@@ -5,6 +5,7 @@ from std_msgs.msg import String
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+# import torch
 
 
 # Talker function for publishers that just take user input and publish to channel
@@ -78,15 +79,15 @@ def write_serial_byte_string(channel=1, target=1500):
         print("target was not between 1000 and 2000, or channel not 1 or 2")
 
 
-def stop_sign_detector(rgb_image_np, model):
-    # Run the YOLOv5s model on the image
-    results = model(rgb_image_np, size=640)
-    # Get the results for the stop sign class
-    stop_sign_results = results.xyxy[0][results.xyxy[0][:, 5] == 11]
-    # Print the bounding box coordinates for each detected stop sign
-    print("results: ", stop_sign_results)
-    is_stop_sign = False
-    for result in stop_sign_results:
-        is_stop_sign = True
-        print('Stop sign detected at:', result[0], result[1], result[2], result[3])
-    return is_stop_sign
+# def stop_sign_detector(rgb_image_np, model):
+#     # Run the YOLOv5s model on the image
+#     results = model(rgb_image_np, size=640)
+#     # Get the results for the stop sign class
+#     stop_sign_results = results.xyxy[0][results.xyxy[0][:, 5] == 11]
+#     # Print the bounding box coordinates for each detected stop sign
+#     print("results: ", stop_sign_results)
+#     is_stop_sign = False
+#     for result in stop_sign_results:
+#         is_stop_sign = True
+#         print('Stop sign detected at:', result[0], result[1], result[2], result[3])
+#     return is_stop_sign

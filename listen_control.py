@@ -8,7 +8,7 @@ import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
 import time
 import os
-import torch
+# import torch
 # import cv2
 # import matplotlib.pyplot as plt
 import sys
@@ -71,13 +71,12 @@ def control_loop():
     rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
 
     while not rospy.is_shutdown():
-        if camera_data.image_data is not None:
-            print("using camera RGB to check for stop sign")
-            is_stop_sign = stop_sign_detector(camera_data.image_data, yolo_model)
-            print("is stop sign? ", is_stop_sign)
+        # if camera_data.image_data is not None:
+        #     print("using camera RGB to check for stop sign")
+        #     is_stop_sign = stop_sign_detector(camera_data.image_data, yolo_model)
+        #     print("is stop sign? ", is_stop_sign)
 
-        # and false!
-        if depth_data.image_data is not None and False:
+        if depth_data.image_data is not None:
             position = get_difference_with_threshold(depth_data.image_data, threshold)
             print("im currently at camera diff position: ", position)
 
