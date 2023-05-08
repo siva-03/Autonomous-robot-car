@@ -89,14 +89,14 @@ def stop_sign_detector(rgb_image_np, num_parts=3):
     # Check if Red channel is greater than Green and Blue channels by 100
     for part in parts:
         # if R value > B + 100 and R > G + 100
-        mask = (part[:, :, 0] > part[:, :, 1] + 50) & (part[:, :, 0] > part[:, :, 2] + 50)
+        mask = (part[:, :, 0] > part[:, :, 1] + 150) & (part[:, :, 0] > part[:, :, 2] + 150)
 
         # Find the indices where the mask is True
         indices = np.where(mask)
 
         print("ALL INDICES: ", indices)
-        print("indices shape: ", indices.shape)
         print("gpt num red pixels: ", (indices[0].size * indices[1].size))
-        print("is stop sign?: ", (len(indices) > 0.25*(part.shape[0]*part.shape[1])))
+        print("pixels needed to qualify = ", 0.25*(part.shape[0]*part.shape[1]))
+        print("is stop sign?: ", (indices[0].size * indices[1].size) > 0.25*(part.shape[0]*part.shape[1])))
 
     # if number of pixels greater than 20% of the image, then return true
