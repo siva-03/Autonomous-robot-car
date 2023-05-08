@@ -26,6 +26,7 @@ from car_control.control_callbacks import depth_callback
 from car_control.utils import min_max_scale
 from car_control.utils import get_difference_with_threshold
 from car_control.utils import write_serial_byte_string
+from car_control.utils import stop_sign_detector
 
 
 # Main control loop for the listener script
@@ -61,15 +62,14 @@ def control_loop():
     rospy.Subscriber("camera/color/image_raw", Image, camera_callback, callback_args=(camera_data, bridge))
     rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
 
-    # just set for testing, will delete. This is our first test, to make sure ctrl+c works
-    # hash out things in control loop that do anything, so it just spins and prints or something
-    # then we test ctrl+c
-    # Do not forget to add all these files to CMake :)
-    # car.steering = 1800
-    rospy.sleep(1)
-
     while not rospy.is_shutdown():
-        if depth_data.image_data is not None:
+        if camera_data.image_data is not None:
+            print("using camera RGB to check for stop sign")
+            is_stop_sign = stop_sign_detector(camera_data.image_data)
+            print("is stop sign? ", is_stop_sign)
+
+        # and false!
+        if depth_data.image_data is not None and False:
             position = get_difference_with_threshold(depth_data.image_data, threshold)
             print("im currently at camera diff position: ", position)
 

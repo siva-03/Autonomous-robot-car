@@ -75,3 +75,28 @@ def write_serial_byte_string(channel=1, target=1500):
         os.system(echo_string)
     else:
         print("target was not between 1000 and 2000, or channel not 1 or 2")
+
+
+def stop_sign_detector(rgb_image_np, num_parts=3):
+    # segment image into parts
+    # compute the size of each part
+    part_size = rgb_image_np.shape[1] // num_parts
+
+    # use list comprehension to extract each part of the image
+    parts = [rgb_image_np[:, i*part_size:(i+1)*part_size, :] for i in range(num_parts)]
+
+    # for each part, check each pixel
+    # Check if Red channel is greater than Green and Blue channels by 100
+    for part in parts:
+        # if R value > B + 100 and R > G + 100
+        mask = (part[:, :, 0] > part[:, :, 1] + 50) & (part[:, :, 0] > part[:, :, 2] + 50)
+
+        # Find the indices where the mask is True
+        indices = np.where(mask)
+
+        print("ALL INDICES: ", indices)
+        print("indices shape: ", indices.shape)
+        print("gpt num red pixels: ", (indices[0].size * indices[1].size))
+        print("is stop sign?: ", (len(indices) > 0.25*(part.shape[0]*part.shape[1])))
+
+    # if number of pixels greater than 20% of the image, then return true
