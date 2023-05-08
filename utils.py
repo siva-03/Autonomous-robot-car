@@ -4,6 +4,7 @@ import rospy
 from std_msgs.msg import String
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 
 # Talker function for publishers that just take user input and publish to channel
@@ -91,6 +92,10 @@ def stop_sign_detector(rgb_image_np, num_parts=1):
         red_pixels = part[..., 0] > (part[..., 1] + 100)
         red_pixels &= part[..., 0] > (part[..., 2] + 100)
         num_pixels = np.sum(red_pixels)
+        red_mask = red_pixels.astype(np.uint8)
+        # display the binary mask as an image
+        plt.imshow(red_mask, cmap='gray')
+        plt.show()
 
         print("rgb top left corner r: ", rgb_image_np[0, 0, 0])
         print("rgb top left corner g: ", rgb_image_np[0, 0, 1])
