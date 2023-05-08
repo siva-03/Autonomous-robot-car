@@ -81,6 +81,7 @@ def write_serial_byte_string(channel=1, target=1500):
 def stop_sign_detector(rgb_image_np, num_parts=1):
     red_pixels = rgb_image_np[..., 0] > (rgb_image_np[..., 1] + 100)
     red_pixels &= rgb_image_np[..., 0] > (rgb_image_np[..., 2] + 100)
+    print(red_pixels)
     num_pixels = np.sum(red_pixels)
     red_mask = red_pixels.astype(np.uint8)
     # display the binary mask as an image
