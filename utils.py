@@ -79,20 +79,25 @@ def write_serial_byte_string(channel=1, target=1500):
 
 
 def stop_sign_detector(rgb_image_np, num_parts=1):
-    red_pixels = rgb_image_np[..., 0] > (rgb_image_np[..., 1] + 100)
-    red_pixels &= rgb_image_np[..., 0] > (rgb_image_np[..., 2] + 100)
-    print(red_pixels)
-    num_pixels = np.sum(red_pixels)
-    red_mask = red_pixels.astype(np.uint8)
-    # display the binary mask as an image
-    plt.imshow(red_mask, cmap='gray')
-    plt.show()
+    # red_pixels = rgb_image_np[..., 0] > (rgb_image_np[..., 1] + 100)
+    # red_pixels &= rgb_image_np[..., 0] > (rgb_image_np[..., 2] + 100)
+    # print(red_pixels)
+    # num_pixels = np.sum(red_pixels)
+    # red_mask = red_pixels.astype(np.uint8)
+    # # display the binary mask as an image
+    # plt.imshow(red_mask, cmap='gray')
+    # plt.show()
+    count = 0
+    for i in range(rgb_image_np.shape[0]):
+        for j in range(rgb_image_np.shape[1]):
+            if (rgb_image_np[i, j, 0] > rgb_image_np[i, j, 1] + 100) and (rgb_image_np[i, j, 0] > rgb_image_np[i,j,2] + 100):
+                count += 1
 
     print("rgb top left corner r: ", rgb_image_np[0, 0, 0])
     print("rgb top left corner g: ", rgb_image_np[0, 0, 1])
     print("rgb top left corner b: ", rgb_image_np[0, 0, 2])
-    print("gpt num red pixels: ", num_pixels)
+    print("for loop red pixels: ", count)
     print("pixels needed to qualify = ", 0.25*(rgb_image_np.shape[0]*rgb_image_np.shape[1]))
-    print("is stop sign?: ", num_pixels > 0.25*(rgb_image_np.shape[0]*rgb_image_np.shape[1]))
+    print("is stop sign?: ", count > 0.25*(rgb_image_np.shape[0]*rgb_image_np.shape[1]))
 
     # if number of pixels greater than 20% of the image, then return true
