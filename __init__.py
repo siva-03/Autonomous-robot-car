@@ -1,1 +1,1 @@
-#!/usr/bin/python
+#!/home/odroid/.pyenv/shims/python

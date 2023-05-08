@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/home/odroid/.pyenv/shims/python
 # Robotics script
 
 import rospy
@@ -8,7 +8,7 @@ import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
 import time
 import os
-# import torch
+import torch
 # import cv2
 # import matplotlib.pyplot as plt
 import sys
@@ -38,7 +38,7 @@ def control_loop():
     # Initialization:
     print("entering control loop, downloading weights")
     # Load the pretrained YOLOv5s model
-    yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+    # yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 
     print("Car initializing and centering")
     # Initialize Car Physically (this will set the wheels and motor to 1500...!)
@@ -101,7 +101,7 @@ def control_loop():
             # print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
             car.steering = min(2000, max((car.steering + maestro_output), 1000))
 
-        rospy.sleep(5)
+        rospy.sleep(0.05)
 
 
 def shutdown_callback():

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/home/odroid/.pyenv/shims/python
 
 from distutils.core import setup
 from catkin_pkg.python_setup import generate_distutils_setup

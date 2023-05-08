@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/home/odroid/.pyenv/shims/python
 # license removed for brevity
 import rospy
 from std_msgs.msg import String
