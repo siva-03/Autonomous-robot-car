@@ -106,19 +106,12 @@ def write_serial_byte_string(channel=1, target=1500):
 #     depth_img_np_gauss = gaussian_filter(depth_img_np, sigma=5)
 
 
-
-
-
-
 def stop_sign_detector(bgr_image_cv):
     # Load the stop sign Haar cascade classifier
     stop_cascade = cv2.CascadeClassifier('stop_sign.xml')
 
-    # Load the image to detect stop signs in
-    img = cv2.imread(bgr_image_cv)
-
     # Convert the image to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(bgr_image_cv, cv2.COLOR_BGR2GRAY)
 
     # Detect stop signs in the image
     stop_signs = stop_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
