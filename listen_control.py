@@ -71,10 +71,10 @@ def control_loop():
     rospy.Subscriber("camera/depth/image_rect_raw", Image, depth_callback, callback_args=(depth_data, bridge))
 
     while not rospy.is_shutdown():
-        # if camera_data.image_data is not None:
-        #     print("using camera RGB to check for stop sign")
-        #     is_stop_sign = stop_sign_detector(camera_data.image_data, yolo_model)
-        #     print("is stop sign? ", is_stop_sign)
+        if camera_data.image_data is not None:
+            print("using camera RGB to check for stop sign")
+            is_stop_sign = stop_sign_detector(camera_data.image_data, yolo_model)
+            print("is stop sign? ", is_stop_sign)
 
         if depth_data.image_data is not None:
             position = get_difference_with_threshold(depth_data.image_data, threshold)
@@ -101,7 +101,7 @@ def control_loop():
             # print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
             car.steering = min(2000, max((car.steering + maestro_output), 1000))
 
-        rospy.sleep(0.05)
+        rospy.sleep(1)
 
 
 def shutdown_callback():

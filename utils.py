@@ -82,10 +82,10 @@ def write_serial_byte_string(channel=1, target=1500):
 def stop_sign_detector(rgb_image_np, model):
     # Run the YOLOv5s model on the image
     results = model(rgb_image_np, size=640)
-    # Get the results for the stop sign class
+    # Get the results for the stop sign class (class 11)
     stop_sign_results = results.xyxy[0][results.xyxy[0][:, 5] == 11]
     # Print the bounding box coordinates for each detected stop sign
-    print("results: ", stop_sign_results)
+    print("results: ", results)
     is_stop_sign = False
     for result in stop_sign_results:
         is_stop_sign = True
