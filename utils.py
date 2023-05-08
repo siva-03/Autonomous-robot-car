@@ -6,7 +6,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import cv2
-from scipy.ndimage import gaussian_filter
+# from scipy.ndimage import gaussian_filter
 # import torch
 
 
@@ -95,9 +95,19 @@ def write_serial_byte_string(channel=1, target=1500):
 #     return is_stop_sign
 
 
-def calculate_speed_based_on_depth(depth_img_np):
-    # first apply element-wise inversion, so close depths are high value and far depths are low
-    depth_img_np = 1 / depth_img_np
+# def calculate_speed_based_on_depth(depth_img_np):
+#     # take 480x480 center
+#     depth_img_np = depth_img_np[:, 80:560]
+#
+#     # first apply element-wise inversion, so close depths are high value and far depths are low
+#     depth_img_np = 1 / (depth_img_np + 0.000001)
+#
+#     # apply a Gaussian filter with sigma = 5
+#     depth_img_np_gauss = gaussian_filter(depth_img_np, sigma=5)
+
+
+
+
 
 
 def stop_sign_detector(rgb_image_np):
