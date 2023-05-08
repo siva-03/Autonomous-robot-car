@@ -88,16 +88,9 @@ def stop_sign_detector(rgb_image_np, num_parts=1):
     # for each part, check each pixel
     # Check if Red channel is greater than Green and Blue channels by 100
     for part in parts:
-        # calculate the absolute difference between red and green channels
-        red_green_diff = np.abs(part[..., 0] - part[..., 1])
-
-        # calculate the absolute difference between red and blue channels
-        red_blue_diff = np.abs(part[..., 0] - part[..., 2])
-
-        # find the number of pixels where red is 50 higher than green or blue
-        num_pixels = np.sum(np.logical_or(red_green_diff >= 50, red_blue_diff >= 50))
-
-        print(num_pixels)
+        red_pixels = part[..., 0] > (part[..., 1] + 100)
+        red_pixels &= part[..., 0] > (part[..., 2] + 100)
+        num_pixels = np.sum(red_pixels)
 
         print("rgb top left corner r: ", rgb_image_np[0, 0, 0])
         print("rgb top left corner g: ", rgb_image_np[0, 0, 1])
