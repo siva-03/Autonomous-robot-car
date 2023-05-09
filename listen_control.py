@@ -104,12 +104,14 @@ def control_loop():
         if depth_data.image_data is not None:
             if checking_obstacles:
                 # check obs in middle third
-                has_obstacle = check_obstacle_in_front(depth_data.image_data[120:420, 213:427])
-                print('rev AND EXECUTING WAIT')
-                has_stopped = True
-                car.motor = 1400
-                rospy.sleep(2)
-                car.motor = prev_speed
+                if check_obstacle_in_front(depth_data.image_data[120:420, 213:427]):
+                    print('rev AND EXECUTING WAIT')
+                    has_stopped = True
+                    car.motor = 1400
+                    rospy.sleep(2)
+                    car.motor = prev_speed
+                else:
+                    print('otherwise: ', np.mean(depth_data.image_data[120:420, 213:427]))
 
             #
             middle_third_mean = np.mean(depth_data.image_data[120:420, 213:427])
