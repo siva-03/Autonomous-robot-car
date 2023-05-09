@@ -77,6 +77,7 @@ def control_loop():
     turn_right = True
 
     while not rospy.is_shutdown():
+        print("loop starting")
         # # check we have depth data, otherwise everything else is useless, we are not safe!
         # if depth_data.image_data is not None:
         #     # check if depth data in middle third of camera is lower than wall_threshold
