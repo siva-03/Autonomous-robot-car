@@ -77,20 +77,20 @@ def control_loop():
     turn_right = True
     checking_stop_signs = False
     # default_speed = 1570
-    car_max_steer = 1900
-    car_min_steer = 1100
+    car_max_steer = 1800
+    car_min_steer = 1200
 
     while not rospy.is_shutdown():
         # check we have depth data, otherwise everything else is useless, we are not safe!
         if depth_data.image_data is not None:
             middle_half_mean = np.mean(depth_data.image_data[120:420, 213:427])
-            if middle_half_mean < 2200:
+            if middle_half_mean < 2500:
                 # turn
                 # car.motor = 1550
                 if turn_right:
-                    car.steering = min(car_max_steer, car.steering + 50)
+                    car.steering = min(car_max_steer, car.steering + 25)
                 else:
-                    car.steering = max(car_min_steer, car.steering - 50)
+                    car.steering = max(car_min_steer, car.steering - 25)
             else:
                 # car.motor = default_speed
                 # check if depth data in middle third of camera is lower than wall_threshold
@@ -162,7 +162,7 @@ def control_loop():
             print("no depth data, centering car")
             car.center()
 
-        rospy.sleep(0.05)
+        rospy.sleep(0.1)
 
 
 def shutdown_callback():
