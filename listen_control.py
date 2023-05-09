@@ -189,7 +189,7 @@ def control_loop():
             print("no depth data, centering car")
             car.center()
 
-        rospy.sleep(0.5)
+        rospy.sleep(0.05)
 
 
 def shutdown_callback():
