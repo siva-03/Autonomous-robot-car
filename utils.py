@@ -107,7 +107,7 @@ def write_serial_byte_string(channel=1, target=1500):
 
 
 def stop_sign_detector(bgr_image_cv):
-    file_path = os.path.join(os.path.dirname(__file__), 'car_control/stop_sign.xml')
+    file_path = os.path.join(os.path.dirname(__file__), 'stop_sign.xml')
 
     with open(file_path, 'r') as file:
         xml_file = file.read()
