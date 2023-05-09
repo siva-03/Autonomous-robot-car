@@ -105,7 +105,7 @@ def control_loop():
 
                         position = get_difference_with_threshold(depth_data.image_data, threshold)
                         print("pos: ", position)
-                        maestro_output = min_max_scale(position, -threshold/4, threshold/4, 1000, 2000)
+                        maestro_output = min_max_scale(position, -threshold/3, threshold/3, 1000, 2000)
                         print('maestro: ', maestro_output)
                         diff = (1500 - maestro_output)
                         final_out = 1500 + diff
