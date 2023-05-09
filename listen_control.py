@@ -104,8 +104,9 @@ def control_loop():
                             print("is stop sign? ", is_stop_sign)
 
                         position = get_difference_with_threshold(depth_data.image_data, threshold)
-                        print("lol")
+                        print("pos: ", position)
                         maestro_output = min_max_scale(position, -threshold, threshold, 1000, 2000)
+                        print("maestro output: ", maestro_output)
                         car.steering = min(2000, max((car.steering + maestro_output), 1000))
 
                         # if position < -1000 or position > 1000:
