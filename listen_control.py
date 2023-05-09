@@ -104,7 +104,7 @@ def control_loop():
                             print("is stop sign? ", is_stop_sign)
 
                         position = get_difference_with_threshold(depth_data.image_data, threshold)
-                        if position < -500 or position > 500:
+                        if position < -1000 or position > 1000:
                             print("im currently at camera diff position: ", position)
 
                             # Instruct PID Controller to take step, based on position and desired set point
