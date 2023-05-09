@@ -104,7 +104,7 @@ def control_loop():
             middle_third_mean = np.mean(depth_data.image_data[120:420, 213:427])
             print("middle third mean", middle_third_mean)
             continue_script = True
-            if middle_third_mean < 4200:
+            if middle_third_mean < 3200:
                 continue_script = False
 
                 # turn
