@@ -104,8 +104,8 @@ class PIDController:
         else:
             derivative = 0
 
-        # Calculate output: kP + kI + kD
-        output = self.kp * error + self.ki * self.integral + self.kd * derivative
+        # Calculate output: kP + kI - kD
+        output = self.kp * error + self.ki * self.integral - self.kd * derivative
 
         # Save last error and time
         self.last_error = error
