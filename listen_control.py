@@ -77,6 +77,8 @@ def control_loop():
     turn_right = True
     checking_stop_signs = False
     # default_speed = 1570
+    car_max_steer = 1950
+    car_min_steer = 1050
 
     while not rospy.is_shutdown():
         # check we have depth data, otherwise everything else is useless, we are not safe!
@@ -86,9 +88,9 @@ def control_loop():
                 # turn
                 # car.motor = 1550
                 if turn_right:
-                    car.steering = 2000
+                    car.steering = car_max_steer
                 else:
-                    car.steering = 1000
+                    car.steering = car_min_steer
             else:
                 # car.motor = default_speed
                 # check if depth data in middle third of camera is lower than wall_threshold
@@ -117,12 +119,16 @@ def control_loop():
                             position = get_difference_with_threshold(depth_data.image_data[120:420, :], threshold)
                             print("pos: ", position)
 
-                            maestro_output = min_max_scale(position, -threshold/2, threshold/2, 1000, 2000)
+                            maestro_output = min_max_scale(position,
+                                                           -threshold/2,
+                                                           threshold/2,
+                                                           car_min_steer,
+                                                           car_max_steer)
                             print('maestro: ', maestro_output)
                             diff = (1500 - maestro_output)
                             final_out = 1500 + diff
                             print("final output: ", final_out)
-                            # car.steering = min(2000, max(final_out, 1000))
+                            car.steering = min(car_max_steer, max(final_out, car_min_steer))
 
                             # if position < -1000 or position > 1000:
                             #     print("im currently at camera diff position: ", position)
