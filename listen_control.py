@@ -75,7 +75,7 @@ def control_loop():
     autonomous_mode = "straight"
     autonomous_turn_angle = 0
     turn_right = True
-    checking_stop_signs = True
+    checking_stop_signs = False
 
     while not rospy.is_shutdown():
         # check we have depth data, otherwise everything else is useless, we are not safe!
@@ -125,7 +125,9 @@ def control_loop():
 
                         # Update current wheel position based on Maestro output, clipped between 1000 and 2000
                         # print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
-                        car.steering = min(2000, max((car.steering + maestro_output), 1000))
+                        # Uncomment later
+                        # car.steering = min(2000, max((car.steering + maestro_output), 1000))
+                        car.steering = 1500
             else:
                 print("immediate obstacle! centering car")
                 car.center()
@@ -133,7 +135,7 @@ def control_loop():
             print("no depth data, centering car")
             car.center()
 
-        rospy.sleep(0.5)
+        rospy.sleep(0.05)
 
 
 def shutdown_callback():
