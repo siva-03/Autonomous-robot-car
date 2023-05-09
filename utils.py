@@ -111,16 +111,9 @@ def stop_sign_detector(bgr_image_cv):
     print("entering stop sign detector")
     file_path = os.path.join(os.path.dirname(__file__), 'stop_sign.xml')
 
-    with open(file_path, 'r') as file:
-        xml_file = file.read()
-
     # Load the stop sign Haar cascade classifier
     stop_cascade = cv2.CascadeClassifier(file_path)
     print("stop cascade created")
-
-    # Convert the image to grayscale
-    #gray = cv2.cvtColor(bgr_image_cv, cv2.COLOR_BGR2GRAY)
-    #print("gray created")
 
     # Detect stop signs in the image
     stop_signs = stop_cascade.detectMultiScale(bgr_image_cv, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)

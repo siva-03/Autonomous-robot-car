@@ -75,70 +75,65 @@ def control_loop():
     autonomous_mode = "straight"
     autonomous_turn_angle = 0
     turn_right = True
+    checking_stop_signs = True
 
     while not rospy.is_shutdown():
-        print("loop starting")
-        # # check we have depth data, otherwise everything else is useless, we are not safe!
-        # if depth_data.image_data is not None:
-        #     # check if depth data in middle third of camera is lower than wall_threshold
-        #     if not check_obstacle_in_front(depth_data.image_data):
-        #
-        #         if autonomous_mode == "turn":
-        #             # turn until IMU angular reaches some value
-        #             car.steering = 2000 if turn_right else 1000
-        #             # autonomous_turn_angle += ..do stuff with IMU
-        #             if autonomous_turn_angle > 90:
-        #                 autonomous_mode = "straight"
-        #                 autonomous_turn_angle = 0
-        #
-        #         elif autonomous_mode == "straight":
-        #
-        #             # check if depth data in middle third is lower than corner_threshold
-        #             if not check_wall_in_prox(depth_data.image_data):
-        #                 autonomous_mode = "turn"
-        #             else:
-        #
-        #                 if camera_data.image_data is not None:
-        #                     print("using camera RGB to check for stop sign")
-        #                     is_stop_sign = stop_sign_detector(camera_data.image_data, yolo_model)
-        #                     print("is stop sign? ", is_stop_sign)
-        #
-        #                 position = get_difference_with_threshold(depth_data.image_data, threshold)
-        #                 print("im currently at camera diff position: ", position)
-        #
-        #                 # Instruct PID Controller to take step, based on position and desired set point
-        #                 # and get back the controller's output
-        #                 output = pid_controller.step(position, set_point)
-        #                 print("output before min/max: ", output)
-        #
-        #                 # Limit output to maximum value, because we don't want to over-react
-        #                 output = min(max_output, max(-max_output, output))
-        #                 # print("output after min/max: ", output)
-        #
-        #                 # Then scale it for our Maestro controller, which has a range of 1000
-        #                 maestro_output = min_max_scale(output,
-        #                                                -max_output,
-        #                                                max_output,
-        #                                                (-1000/discretization_amount),
-        #                                                (1000/discretization_amount))
-        #                 # print("maestro output: ", maestro_output)
-        #
-        #                 # Update current wheel position based on Maestro output, clipped between 1000 and 2000
-        #                 # print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
-        #                 car.steering = min(2000, max((car.steering + maestro_output), 1000))
-        #     else:
-        #         print("immediate obstacle! centering car")
-        #         car.center()
-        # else:
-        #     print("no depth data, centering car")
-        #     car.center()
+        # check we have depth data, otherwise everything else is useless, we are not safe!
+        if depth_data.image_data is not None:
+            # check if depth data in middle third of camera is lower than wall_threshold
+            if not check_obstacle_in_front(depth_data.image_data):
 
-        if camera_data.image_data is not None and camera_data.original_cv_img is not None:
-            print("using camera RGB to check for stop sign")
-            is_stop_sign = stop_sign_detector(camera_data.original_cv_img)
-            print("is stop sign? ", is_stop_sign)
+                if autonomous_mode == "turn":
+                    # turn until IMU angular reaches some value
+                    car.steering = 2000 if turn_right else 1000
+                    # autonomous_turn_angle += ..do stuff with IMU
+                    if autonomous_turn_angle > 90:
+                        autonomous_mode = "straight"
+                        autonomous_turn_angle = 0
 
-        rospy.sleep(1)
+                elif autonomous_mode == "straight":
+
+                    # check if depth data in middle third is lower than corner_threshold
+                    if not check_wall_in_prox(depth_data.image_data):
+                        autonomous_mode = "turn"
+                    else:
+
+                        if camera_data.original_img_cv is not None and checking_stop_signs:
+                            print("using camera RGB to check for stop sign")
+                            is_stop_sign = stop_sign_detector(camera_data.original_img_cv)
+                            print("is stop sign? ", is_stop_sign)
+
+                        position = get_difference_with_threshold(depth_data.image_data, threshold)
+                        print("im currently at camera diff position: ", position)
+
+                        # Instruct PID Controller to take step, based on position and desired set point
+                        # and get back the controller's output
+                        output = pid_controller.step(position, set_point)
+                        print("output before min/max: ", output)
+
+                        # Limit output to maximum value, because we don't want to over-react
+                        output = min(max_output, max(-max_output, output))
+                        # print("output after min/max: ", output)
+
+                        # Then scale it for our Maestro controller, which has a range of 1000
+                        maestro_output = min_max_scale(output,
+                                                       -max_output,
+                                                       max_output,
+                                                       (-1000/discretization_amount),
+                                                       (1000/discretization_amount))
+                        # print("maestro output: ", maestro_output)
+
+                        # Update current wheel position based on Maestro output, clipped between 1000 and 2000
+                        # print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
+                        car.steering = min(2000, max((car.steering + maestro_output), 1000))
+            else:
+                print("immediate obstacle! centering car")
+                car.center()
+        else:
+            print("no depth data, centering car")
+            car.center()
+
+        rospy.sleep(0.5)
 
 
 def shutdown_callback():
