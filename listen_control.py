@@ -76,7 +76,7 @@ def control_loop():
     # assume we start in hall
     autonomous_mode = "straight"
     autonomous_turn_angle = 0
-    turn_right = True
+    turn_right = False
     checking_stop_signs = False
     has_stopped = False
     # default_speed = 1570
