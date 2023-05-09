@@ -88,9 +88,9 @@ def control_loop():
                 # turn
                 # car.motor = 1550
                 if turn_right:
-                    car.steering = car_max_steer
+                    car.steering = min(car_max_steer, car.steering + 50)
                 else:
-                    car.steering = car_min_steer
+                    car.steering = max(car_min_steer, car.steering - 50)
             else:
                 # car.motor = default_speed
                 # check if depth data in middle third of camera is lower than wall_threshold
