@@ -102,8 +102,8 @@ def control_loop():
                             print("using camera RGB to check for stop sign")
                             is_stop_sign = stop_sign_detector(camera_data.original_img_cv)
                             print("is stop sign? ", is_stop_sign)
-
-                        position = get_difference_with_threshold(depth_data.image_data[360:, :, :], threshold)
+                        
+                        position = get_difference_with_threshold(depth_data.image_data[360:, :], threshold)
                         print("pos: ", position)
                         maestro_output = min_max_scale(position, -threshold/2, threshold/2, 1000, 2000)
                         print('maestro: ', maestro_output)
