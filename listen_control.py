@@ -85,7 +85,7 @@ def control_loop():
         # check we have depth data, otherwise everything else is useless, we are not safe!
         if depth_data.image_data is not None:
             middle_half_mean = np.mean(depth_data.image_data[120:420, 213:427])
-            if middle_half_mean < 3500:
+            if middle_half_mean < 4200:
                 # turn
                 # car.motor = 1550
                 if turn_right:
@@ -163,7 +163,7 @@ def control_loop():
             print("no depth data, centering car")
             car.center()
 
-        rospy.sleep(0.05)
+        rospy.sleep(0.025)
 
 
 def shutdown_callback():
