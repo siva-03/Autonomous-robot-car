@@ -122,7 +122,7 @@ def control_loop():
                             diff = (1500 - maestro_output)
                             final_out = 1500 + diff
                             print("final output: ", final_out)
-                            car.steering = min(2000, max(final_out, 1000))
+                            # car.steering = min(2000, max(final_out, 1000))
 
                             # if position < -1000 or position > 1000:
                             #     print("im currently at camera diff position: ", position)
