@@ -139,7 +139,7 @@ def control_loop():
             if continue_script:
                 # car.motor = default_speed
                 # check if depth data in middle third of camera is lower than wall_threshold
-                if not True:
+                if True:
 
                     if autonomous_mode == "turn":
                         # turn until IMU angular reaches some value
