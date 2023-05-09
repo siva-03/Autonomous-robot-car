@@ -77,8 +77,8 @@ def control_loop():
     turn_right = True
     checking_stop_signs = False
     # default_speed = 1570
-    car_max_steer = 1950
-    car_min_steer = 1050
+    car_max_steer = 1900
+    car_min_steer = 1100
 
     while not rospy.is_shutdown():
         # check we have depth data, otherwise everything else is useless, we are not safe!
