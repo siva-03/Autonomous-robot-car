@@ -100,7 +100,7 @@ def control_loop():
                     else:
                         continue_script = True
                 else:
-                    left_half_mean = np.mean(depth_data.image_data[120:420, :320])
+                    left_half_mean = np.mean(depth_data.image_data[120:420, :213])
                     if left_half_mean < 10000:
                         car.steering = max(car_min_steer, car.steering - 25)
                     else:
