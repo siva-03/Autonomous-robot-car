@@ -84,7 +84,7 @@ def control_loop():
         # check we have depth data, otherwise everything else is useless, we are not safe!
         if depth_data.image_data is not None:
             middle_half_mean = np.mean(depth_data.image_data[120:420, 213:427])
-            if middle_half_mean < 1800:
+            if middle_half_mean < 2200:
                 # turn
                 # car.motor = 1550
                 if turn_right:
