@@ -119,20 +119,19 @@ def stop_sign_detector(bgr_image_cv):
     print("stop cascade created")
 
     # Convert the image to grayscale
-    gray = cv2.cvtColor(bgr_image_cv, cv2.COLOR_BGR2GRAY)
-    print("gray created")
+    #gray = cv2.cvtColor(bgr_image_cv, cv2.COLOR_BGR2GRAY)
+    #print("gray created")
 
     # Detect stop signs in the image
-    stop_signs, error = stop_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
+    stop_signs = stop_cascade.detectMultiScale(bgr_image_cv, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
     print("stop signs: ", stop_signs)
 
     # Draw a rectangle around each detected stop sign
     found_stop = False
-    if not error:
-        for (x, y, w, h) in stop_signs:
-            found_stop = True
-            print("found")
-            print(f"X: {x}, Y: {y}, W: {w}, hey {h}")
+    for (x, y, w, h) in stop_signs:
+        found_stop = True
+        print("found")
+        print(f"X: {x}, Y: {y}, W: {w}, hey {h}")
 
     return found_stop
 
