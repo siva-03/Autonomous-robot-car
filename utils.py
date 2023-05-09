@@ -129,9 +129,12 @@ def stop_sign_detector(bgr_image_cv):
     return found_stop
 
 
-def check_obstacle_in_front(rgb_image_np):
+def check_obstacle_in_front(depth_img_np):
+    # if n number of pixels less than x distance in middle third? of img, return true
+
     return False
 
 
-def check_wall_in_prox(rgb_image_np):
+def check_wall_in_prox(depth_img_np):
+
     return True

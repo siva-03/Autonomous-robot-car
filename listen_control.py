@@ -105,6 +105,17 @@ def control_loop():
 
                         position = get_difference_with_threshold(depth_data.image_data[120:420, :], threshold)
                         print("pos: ", position)
+
+                        print("total mean: ", np.mean(depth_data.image_data))
+
+                        middle_half_mean = np.mean(depth_data.image_data[120:420, 160:480])
+                        print("middle half mean: ", middle_half_mean)
+
+                        middle_third_mean = np.mean(depth_data.image_data[120:420, 213:427])
+                        print("middle third mean: ", middle_third_mean)
+
+                        print("num pixels below thresh: ", np.sum(depth_data.image_data < 1000))
+
                         maestro_output = min_max_scale(position, -threshold/2, threshold/2, 1000, 2000)
                         print('maestro: ', maestro_output)
                         diff = (1500 - maestro_output)
@@ -144,7 +155,7 @@ def control_loop():
             print("no depth data, centering car")
             car.center()
 
-        rospy.sleep(0.05)
+        rospy.sleep(1)
 
 
 def shutdown_callback():
