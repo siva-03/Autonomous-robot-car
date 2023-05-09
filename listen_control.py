@@ -99,7 +99,6 @@ def control_loop():
                 rospy.sleep(2)
                 car.motor = prev_speed
 
-
         # check we have depth data, otherwise everything else is useless, we are not safe!
         if depth_data.image_data is not None:
             middle_third_mean = np.mean(depth_data.image_data[120:420, 213:427])
