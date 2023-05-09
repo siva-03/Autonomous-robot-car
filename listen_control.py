@@ -107,7 +107,7 @@ def control_loop():
                 if check_obstacle_in_front(depth_data.image_data[120:420, 213:427]):
                     print('rev AND EXECUTING WAIT')
                     has_stopped = True
-                    car.motor = 1400
+                    car.motor = 1450
                     rospy.sleep(2)
                     car.motor = prev_speed
                 else:
