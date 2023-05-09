@@ -70,7 +70,7 @@ def camera_callback(data, param_data):
     real_img_np = None
     try:
         real_img = bridge.imgmsg_to_cv2(data, "bgr8")
-        camera_data.original_cv_img = real_img
+        camera_data.original_img_cv = real_img
         real_img_np = np.asarray(real_img)[:, :, ::-1]
     except CvBridgeError as e:
         print(e)
@@ -86,7 +86,7 @@ def depth_callback(data, param_data):
     real_img_np = None
     try:
         real_img = bridge.imgmsg_to_cv2(data)
-        depth_data.original_cv_img = real_img
+        depth_data.original_img_cv = real_img
         real_img_np = np.asarray(real_img)
     except CvBridgeError as e:
         print(e)
