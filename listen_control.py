@@ -129,12 +129,13 @@ def control_loop():
                         if not check_wall_in_prox(depth_data.image_data):
                             autonomous_mode = "turn"
                         else:
-
+                            print("right before")
                             if camera_data.original_img_cv is not None and checking_stop_signs and not has_stopped:
                                 print("using camera RGB to check for stop sign")
                                 is_stop_sign, h, w = stop_sign_detector(camera_data.original_img_cv)
                                 print("is stop sign? ", is_stop_sign)
                                 if is_stop_sign:
+                                    print('STOPPING AND EXECUTING WAIT')
                                     has_stopped = True
                                     car.motor = 1500
                                     rospy.sleep(2)
