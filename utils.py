@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # license removed for brevity
-import cv2.data
+
 import rospy
 from std_msgs.msg import String
 import numpy as np
@@ -115,7 +115,7 @@ def stop_sign_detector(bgr_image_cv):
         xml_file = file.read()
 
     # Load the stop sign Haar cascade classifier
-    stop_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + file_path)
+    stop_cascade = cv2.CascadeClassifier(file_path)
     print("stop cascade created")
 
     # Convert the image to grayscale
