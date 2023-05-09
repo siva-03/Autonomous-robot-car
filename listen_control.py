@@ -47,6 +47,7 @@ def control_loop():
     # so we might want to sleep and chill out for a second
     rospy.sleep(1)
     print("car successfully initialized, continuing now...")
+    print("hertz: 0.05")
 
     # initialize data objects
     sensor_data = SensorData()
@@ -84,7 +85,7 @@ def control_loop():
         # check we have depth data, otherwise everything else is useless, we are not safe!
         if depth_data.image_data is not None:
             middle_half_mean = np.mean(depth_data.image_data[120:420, 213:427])
-            if middle_half_mean < 2500:
+            if middle_half_mean < 3500:
                 # turn
                 # car.motor = 1550
                 if turn_right:
