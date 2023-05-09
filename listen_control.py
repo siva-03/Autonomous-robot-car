@@ -86,6 +86,20 @@ def control_loop():
 
     while not rospy.is_shutdown():
         prev_speed = car.motor
+
+        if camera_data.original_img_cv is not None and checking_stop_signs and not has_stopped:
+            print("using camera RGB to check for stop sign")
+            is_stop_sign = stop_sign_detector(camera_data.original_img_cv)
+            print("is stop sign? ", is_stop_sign)
+            # lol
+            if is_stop_sign:
+                print('STOPPING AND EXECUTING WAIT')
+                has_stopped = True
+                car.motor = 1500
+                rospy.sleep(2)
+                car.motor = prev_speed
+
+
         # check we have depth data, otherwise everything else is useless, we are not safe!
         if depth_data.image_data is not None:
             middle_third_mean = np.mean(depth_data.image_data[120:420, 213:427])
@@ -129,17 +143,6 @@ def control_loop():
                         if not check_wall_in_prox(depth_data.image_data):
                             autonomous_mode = "turn"
                         else:
-                            print("right before")
-                            if camera_data.original_img_cv is not None and checking_stop_signs and not has_stopped:
-                                print("using camera RGB to check for stop sign")
-                                is_stop_sign = stop_sign_detector(camera_data.original_img_cv)
-                                print("is stop sign? ", is_stop_sign)
-                                if is_stop_sign:
-                                    print('STOPPING AND EXECUTING WAIT')
-                                    has_stopped = True
-                                    car.motor = 1500
-                                    rospy.sleep(2)
-                                    car.motor = prev_speed
 
                             position = get_difference_with_threshold(depth_data.image_data[120:420, :], threshold)
                             print("pos: ", position)
