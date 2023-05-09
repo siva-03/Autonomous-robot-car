@@ -77,7 +77,7 @@ def control_loop():
     autonomous_mode = "straight"
     autonomous_turn_angle = 0
     turn_right = True
-    checking_stop_signs = True
+    checking_stop_signs = False
     has_stopped = False
     # default_speed = 1570
     prev_speed = 1500
@@ -104,25 +104,25 @@ def control_loop():
             middle_third_mean = np.mean(depth_data.image_data[120:420, 213:427])
             print("middle third mean", middle_third_mean)
             continue_script = True
-            # if middle_third_mean < 4200:
-            #     continue_script = False
-            #
-            #     # turn
-            #     # car.motor = 1550
-            #     if turn_right:
-            #         right_third_mean = np.mean(depth_data.image_data[120:420, 427:])
-            #         print("right half mean: ", right_third_mean)
-            #         if right_third_mean < 10000:
-            #             car.steering = min(car_max_steer, car.steering + 25)
-            #         else:
-            #             continue_script = True
-            #     else:
-            #         left_third_mean = np.mean(depth_data.image_data[120:420, :213])
-            #         # haha
-            #         if left_third_mean < 10000:
-            #             car.steering = max(car_min_steer, car.steering - 25)
-            #         else:
-            #             continue_script = True
+            if middle_third_mean < 4200:
+                continue_script = False
+
+                # turn
+                # car.motor = 1550
+                if turn_right:
+                    right_third_mean = np.mean(depth_data.image_data[120:420, 427:])
+                    print("right half mean: ", right_third_mean)
+                    if right_third_mean < 10000:
+                        car.steering = min(car_max_steer, car.steering + 25)
+                    else:
+                        continue_script = True
+                else:
+                    left_third_mean = np.mean(depth_data.image_data[120:420, :213])
+                    # haha
+                    if left_third_mean < 10000:
+                        car.steering = max(car_min_steer, car.steering - 25)
+                    else:
+                        continue_script = True
             if continue_script:
                 # car.motor = default_speed
                 # check if depth data in middle third of camera is lower than wall_threshold
