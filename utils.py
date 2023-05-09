@@ -122,9 +122,12 @@ def stop_sign_detector(bgr_image_cv):
     # Draw a rectangle around each detected stop sign
     found_stop = False
     for (x, y, w, h) in stop_signs:
-        found_stop = True
-        print("found")
-        print(f"X: {x}, Y: {y}, W: {w}, hey {h}")
+        if w > 100 and h > 100:
+            found_stop = True
+            print("found")
+            print(f"X: {x}, Y: {y}, W: {w}, hey {h}")
+        else:
+            print(f"TOO FAR BACK! X: {x}, Y: {y}, W: {w}, hey {h}")
 
     return found_stop
 
