@@ -134,8 +134,10 @@ def stop_sign_detector(bgr_image_cv):
 
 def check_obstacle_in_front(depth_img_np):
     # if n number of pixels less than x distance in middle third? of img, return true
-
-    return False
+    obs_in_front = False
+    if np.mean(depth_img_np) < 500:
+        obs_in_front = True
+    return obs_in_front
 
 
 def check_wall_in_prox(depth_img_np):

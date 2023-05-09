@@ -78,6 +78,7 @@ def control_loop():
     autonomous_turn_angle = 0
     turn_right = False
     checking_stop_signs = False
+    checking_obstacles = True
     has_stopped = False
     # default_speed = 1570
     prev_speed = 1500
@@ -101,32 +102,42 @@ def control_loop():
 
         # check we have depth data, otherwise everything else is useless, we are not safe!
         if depth_data.image_data is not None:
+            if checking_obstacles:
+                # check obs in middle third
+                has_obstacle = check_obstacle_in_front(depth_data.image_data[120:420, 213:427])
+                print('rev AND EXECUTING WAIT')
+                has_stopped = True
+                car.motor = 1400
+                rospy.sleep(2)
+                car.motor = prev_speed
+
+            #
             middle_third_mean = np.mean(depth_data.image_data[120:420, 213:427])
             print("middle third mean", middle_third_mean)
             continue_script = True
-            if middle_third_mean < 2250:
-                continue_script = False
-
-                # turn
-                # car.motor = 1550
-                if turn_right:
-                    right_third_mean = np.mean(depth_data.image_data[120:420, 427:])
-                    print("right half mean: ", right_third_mean)
-                    if right_third_mean < 10000:
-                        car.steering = min(car_max_steer, car.steering + 25)
-                    else:
-                        continue_script = True
-                else:
-                    left_third_mean = np.mean(depth_data.image_data[120:420, :213])
-                    # haha
-                    if left_third_mean < 10000:
-                        car.steering = max(car_min_steer, car.steering - 25)
-                    else:
-                        continue_script = True
+            # if middle_third_mean < 2250:
+            #     continue_script = False
+            #
+            #     # turn
+            #     # car.motor = 1550
+            #     if turn_right:
+            #         right_third_mean = np.mean(depth_data.image_data[120:420, 427:])
+            #         print("right half mean: ", right_third_mean)
+            #         if right_third_mean < 10000:
+            #             car.steering = min(car_max_steer, car.steering + 25)
+            #         else:
+            #             continue_script = True
+            #     else:
+            #         left_third_mean = np.mean(depth_data.image_data[120:420, :213])
+            #         # haha
+            #         if left_third_mean < 10000:
+            #             car.steering = max(car_min_steer, car.steering - 25)
+            #         else:
+            #             continue_script = True
             if continue_script:
                 # car.motor = default_speed
                 # check if depth data in middle third of camera is lower than wall_threshold
-                if not check_obstacle_in_front(depth_data.image_data):
+                if not True:
 
                     if autonomous_mode == "turn":
                         # turn until IMU angular reaches some value
