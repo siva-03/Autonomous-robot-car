@@ -75,7 +75,7 @@ def control_loop():
     # assume we start in hall
     autonomous_mode = "straight"
     autonomous_turn_angle = 0
-    turn_right = True
+    turn_right = False
     checking_stop_signs = False
     # default_speed = 1570
     car_max_steer = 1800
@@ -100,8 +100,8 @@ def control_loop():
                     else:
                         continue_script = True
                 else:
-                    left_half_mean = np.mean(depth_data.image_data[120:420, :213])
-                    if left_half_mean < 10000:
+                    left_third_mean = np.mean(depth_data.image_data[120:420, :213])
+                    if left_third_mean < 10000:
                         car.steering = max(car_min_steer, car.steering - 25)
                     else:
                         continue_script = True
