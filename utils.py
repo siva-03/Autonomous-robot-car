@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # license removed for brevity
+import cv2.data
 import rospy
 from std_msgs.msg import String
 import numpy as np
@@ -107,16 +108,19 @@ def write_serial_byte_string(channel=1, target=1500):
 
 
 def stop_sign_detector(bgr_image_cv):
+    print("entering stop sign detector")
     file_path = os.path.join(os.path.dirname(__file__), 'stop_sign.xml')
 
     with open(file_path, 'r') as file:
         xml_file = file.read()
 
     # Load the stop sign Haar cascade classifier
-    stop_cascade = cv2.CascadeClassifier(xml_file)
+    stop_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + file_path)
+    print("stop cascade created")
 
     # Convert the image to grayscale
     gray = cv2.cvtColor(bgr_image_cv, cv2.COLOR_BGR2GRAY)
+    print("gray created")
 
     # Detect stop signs in the image
     stop_signs, error = stop_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
