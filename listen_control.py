@@ -104,29 +104,35 @@ def control_loop():
                             print("is stop sign? ", is_stop_sign)
 
                         position = get_difference_with_threshold(depth_data.image_data, threshold)
-                        if position < -1000 or position > 1000:
-                            print("im currently at camera diff position: ", position)
+                        print("lol")
+                        maestro_output = min_max_scale(position, -threshold, threshold, 1000, 2000)
+                        car.steering = min(2000, max((car.steering + maestro_output), 1000))
 
-                            # Instruct PID Controller to take step, based on position and desired set point
-                            # and get back the controller's output
-                            output = pid_controller.step(position, set_point)
-                            print("output before min/max: ", output)
-
-                            # Limit output to maximum value, because we don't want to over-react
-                            output = min(max_output, max(-max_output, output))
-                            # print("output after min/max: ", output)
-
-                            # Then scale it for our Maestro controller, which has a range of 1000
-                            maestro_output = min_max_scale(output,
-                                                           -max_output,
-                                                           max_output,
-                                                           (-1000/discretization_amount),
-                                                           (1000/discretization_amount))
-                            # print("maestro output: ", maestro_output)
-
-                            # Update current wheel position based on Maestro output, clipped between 1000 and 2000
-                            # print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
-                            car.steering = min(2000, max((car.steering + maestro_output), 1000))
+                        # if position < -1000 or position > 1000:
+                        #     print("im currently at camera diff position: ", position)
+                        #
+                        #     # Instruct PID Controller to take step, based on position and desired set point
+                        #     # and get back the controller's output
+                        #     output = pid_controller.step(position, set_point)
+                        #     print("output before min/max: ", output)
+                        #
+                        #     # Limit output to maximum value, because we don't want to over-react
+                        #     output = min(max_output, max(-max_output, output))
+                        #     # print("output after min/max: ", output)
+                        #
+                        #     # Then scale it for our Maestro controller, which has a range of 1000
+                        #     maestro_output = min_max_scale(output,
+                        #                                    -max_output,
+                        #                                    max_output,
+                        #                                    (-1000/discretization_amount),
+                        #                                    (1000/discretization_amount))
+                        #     # print("maestro output: ", maestro_output)
+                        #
+                        #     # Update current wheel position based on Maestro output, clipped between 1000 and 2000
+                        #     # print("trying to set steering: ", str(min(2000, max((car.steering + maestro_output), 1000))))
+                        #     car.steering = min(2000, max((car.steering + maestro_output), 1000))
+                        # else:
+                        #     car.steering = 1500
             else:
                 print("immediate obstacle! centering car")
                 car.center()
